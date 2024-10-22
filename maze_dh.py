@@ -96,7 +96,7 @@ class Maze:
 
 
     def floodclear(self): # clear the flood table
-        self.cost = [[0 for _ in range(self.size)] for _ in range(self.size)]
+        self.cost = [[255 for _ in range(self.size)] for _ in range(self.size)]
 
     def cell_id(self,col,row):
         return row+col*self.size
@@ -104,59 +104,49 @@ class Maze:
     def cell_xy(self,cell):
         return (cell // 16, cell % 16)
     
-    def floodmaze(self,target,end_cell):   # flood the maze from the strt cell to the fin cell
-        # global maze, walls, floodfail
+    def floodmaze(self,target,end_cell):                            # flood the maze from the strt cell to the fin cell
         proclist = [0]*self.size*self.size
-        self.floodclear()           # clear the flood table to all 283
-        flooded = 0                 # set flag to not finished flooding yet
-        here = target               # current cell being processed
+        self.floodclear()                                           # clear the flood table to all 283
+        flooded = 0                                                 # set flag to not finished flooding yet
+        here = target                                               # current cell being processed
         x,y = self.cell_xy(target)
-        self.cost[x][y] = 0         # set start cell flood value to one
-        n = 0                       # index for processing list array of cells to say where to add to end of list
-        nxt = 0                     # pointer to the first unprocessed item on the list
+        self.cost[x][y] = 0                                         # set start cell flood value to one
+        n = 0                                                       # index for processing list array of cells to say where to add to end of list
+        nxt = 0                                                     # pointer to the first unprocessed item on the list
         while (flooded == 0):
             x,y = self.cell_xy(here)
-            cost_here = self.cost[x][y]                                                             # get current value of current cell
-            if not self.has_wall(x,y,"S") and y > 0:                                               # is there a gap to the SOUTH of current cell
-                if ((self.cost[x][y-1] == 0) or ((cost_here + 1) < self.cost[x][y-1])):
-                    self.cost[x][y-1] = cost_here + 1                                               # set flood value in this cell
-                    proclist[n] = here-1                                                    # save flood cell for future processing
-                    n = n + 1                                                                       # update processing list number
-                    if (proclist[n-1] == end_cell):                                                 # check if finished flooding
-                        flooded = 1                                                                 # set flag to stop loop
+            cost_here = self.cost[x][y]
+            cost_next = cost_here + 1                               # get current value of current cell
+            if not self.has_wall(x,y,"S") and y > 0:                # is there a gap to the SOUTH of current cell
+                if self.cost[x][y-1] == 255:
+                    self.cost[x][y-1] = cost_next                   # set flood value in this cell
+                    proclist[n] = here-1                            # save flood cell for future processing
+                    n = n + 1                                       # update processing list number
                 
-            if not self.has_wall(x,y,"E") and x < self.size-1:                                              # is there a gap to the EAST of current cell
-                if ((self.cost[x+1][y] == 0) or ((cost_here + 1) < self.cost[x+1][y])):
-                    self.cost[x+1][y] = cost_here + 1        # set flood value in this cell
-                    proclist[n] = here + self.size           # save flood cell for future processing
-                    n = n + 1                        # update processing list number
-                    if (proclist[n-1] == end_cell):           # check if finished flooding
-                        flooded = 1                      # set flag to stop loop
-            if (not self.has_wall(x,y,"N") and y < self.size-1):     # is there a gap to the NORTH of current cell
-                if ((self.cost[x][y+1] == 0) or ((cost_here + 1) < self.cost[x][y+1])):
-                    self.cost[x][y+1] = cost_here + 1    # set flood value in this cell
-                    proclist[n] = here + 1       # save flood cell for future processing
-                    n = n + 1                        # update processing list number
-                    if (proclist[n-1] == end_cell):           # check if finished flooding
-                           flooded = 1                      # set flag to stop loop
-            if (not self.has_wall(x,y,"W") and x > 0):      # is there a gap to the NORTH of current cell
-                if ((self.cost[x-1][y] == 0) or ((cost_here + 1) < self.cost[x-1][y])):
-                    self.cost[x-1][y] = cost_here + 1        # set flood value in this cell
-                    proclist[n] = here - self.size           # save flood cell for future processing
-                    n = n + 1                        # update processing list number
-                    if (proclist[n-1] == end_cell):       # check if finished flooding
-                        flooded = 1                  # set flag to stop loop
+            if not self.has_wall(x,y,"E") and x < self.size-1:      # is there a gap to the EAST of current cell
+                if self.cost[x+1][y] == 255:
+                    self.cost[x+1][y] = cost_next                   # set flood value in this cell
+                    proclist[n] = here + self.size                  # save flood cell for future processing
+                    n = n + 1                                       # update processing list number
+
+            if not self.has_wall(x,y,"N") and y < self.size-1:      # is there a gap to the NORTH of current cell
+                if self.cost[x][y+1] == 255:
+                    self.cost[x][y+1] = cost_next                   # set flood value in this cell
+                    proclist[n] = here + 1                          # save flood cell for future processing
+                    n = n + 1                                       # update processing list number
+
+            if not self.has_wall(x,y,"W") and x > 0:                # is there a gap to the NORTH of current cell
+                if self.cost[x-1][y]   == 255:
+                    self.cost[x-1][y] = cost_next                   # set flood value in this cell
+                    proclist[n] = here - self.size                  # save flood cell for future processing
+                    n = n + 1                                       # update processing list number
             
-            here = proclist[nxt]                 # get the location of the next cell to process
-            nxt = nxt + 1                        # point to next item to process on the list
+            here = proclist[nxt]                                    # get the location of the next cell to process
+            nxt = nxt + 1                                           # point to next item to process on the list
             
-            if (nxt > n):                        # check if flood unable to continue as no more cells accessible
-                floodfail = 1                     # set flood failure status flag
-                flooded = 1 # stop  the flooding loop
-                # if (debug == 1):
-                #     print (target, end_cell, nxt, n, proclist)
-            #print ("after flood")
-            #showflood()
+            if (nxt > n):                                           # check if flood unable to continue as no more cells accessible
+                floodfail = 1                                       # set flood failure status flag
+                flooded = 1                                         # stop  the flooding loop
         return    
 
 
