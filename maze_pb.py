@@ -429,4 +429,6 @@ if __name__ == "__main__":
         distances = maze.flood(maze.goal())  # Assuming the target cell is at (7, 7)
     end_time = time.time()
     t = end_time - start_time
+    maze.print_maze2()
+    maze.print_maze(VIEW_COSTS)
     print(f"Execution Time for {iterations} iterations: {t:.6f} seconds")
