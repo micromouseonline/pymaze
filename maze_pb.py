@@ -368,20 +368,19 @@ class Maze:
     
 if __name__ == "__main__":    
     maze = Maze()
-    maze.set_wall_state(7, 7, "W", WALL_PRESENT)
-    maze.set_wall_state(7, 7, "S", WALL_PRESENT)
-    maze.set_wall_state(8, 7, "S", WALL_PRESENT)
-    maze.set_wall_state(8, 7, "E", WALL_PRESENT)
-    maze.set_wall_state(8, 8, "E", WALL_ABSENT)
-    maze.set_wall_state(8, 8, "N", WALL_PRESENT)
-    maze.set_wall_state(7, 8, "N", WALL_PRESENT)
-    maze.set_wall_state(7, 8, "W", WALL_PRESENT)
-    maze.set_wall_state(4, 4, "N", WALL_PRESENT)
-    maze.set_wall_state(4, 4, "E", WALL_PRESENT)
-    maze.set_wall_state(4, 4, "S", WALL_PRESENT)
-    maze.set_wall_state(4, 4, "W", WALL_PRESENT)
-    maze.print_maze(VIEW_COSTS)
-
+    maze.set_wall_state(7, 7, HDG_WEST, WALL_PRESENT)
+    maze.set_wall_state(7, 7, HDG_SOUTH, WALL_PRESENT)
+    maze.set_wall_state(8, 7, HDG_SOUTH, WALL_PRESENT)
+    maze.set_wall_state(8, 7, HDG_EAST, WALL_PRESENT)
+    maze.set_wall_state(8, 8, HDG_EAST, WALL_ABSENT)
+    maze.set_wall_state(8, 8, HDG_NORTH, WALL_PRESENT)
+    maze.set_wall_state(7, 8, HDG_NORTH, WALL_PRESENT)
+    maze.set_wall_state(7, 8, HDG_WEST, WALL_PRESENT)
+    maze.set_wall_state(4, 4, HDG_NORTH, WALL_PRESENT)
+    maze.set_wall_state(4, 4, HDG_EAST, WALL_PRESENT)
+    maze.set_wall_state(4, 4, HDG_SOUTH, WALL_PRESENT)
+    maze.set_wall_state(4, 4, HDG_WEST, WALL_PRESENT)
+    
     start_time = time.time()
     iterations = 1000
  
