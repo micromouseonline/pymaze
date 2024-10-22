@@ -71,6 +71,7 @@ def behind_from(heading : int) -> int :
  * Locations have a number of supporting operations collected into the struct so
  * that you don't have to keep re-writing the same bits of code.
  *
+ *******************************************************************************88
  * PH: This is probably just overkill and confusing
  *     it is particularly irksome to pass the size all the time
 
