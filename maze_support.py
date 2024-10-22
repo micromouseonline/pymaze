@@ -85,6 +85,9 @@ class Location :
         self.y = y
         self.size = size
 
+    def __str__(self):
+        return f"<Location({self.x},{self.y})>"
+
     def is_in_maze(self) -> bool :
         return self.x < self.size and self.y < self.size
     
@@ -141,15 +144,14 @@ class Location :
 
         return data            
 
-class WallState :
-    EXIT = 0    # a wall that has been seen and confirmed absent
-    WALL = 1    # a wall that has been seen and confirmed present
-    UNKNOWN = 2 # a wall that has not yet been seen
-    VIRTUAL = 3 # a wall that has not yet been seen
+
 
 class WallInfo :
     def __init__(self):
-        self.north = WallState.UNKNOWN
-        self.east = WallState.UNKNOWN
-        self.south = WallState.UNKNOWN
-        self.west = WallState.UNKNOWN            
+        self.north = WALL_UNKNOWN
+        self.east = WALL_UNKNOWN
+        self.south = WALL_UNKNOWN
+        self.west = WALL_UNKNOWN     
+
+    def __str__(self):
+        return f"<WallInfo({self.north},{self.east},{self.south},{self.west})>"       
