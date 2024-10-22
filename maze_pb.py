@@ -324,6 +324,47 @@ class Maze:
 
         print(value, end="")
 
+    def print_maze2(self):
+        for row in range(self.m_width - 1, -1, -1):
+            # Print the north walls and top boundary
+            line = "+"
+            for col in range(self.m_width):
+                walls = self.walls(Location(col,row))
+                if walls.north == WALL_PRESENT:
+                    line += "---+"
+                else:
+                    line += "   +"
+            print(line)
+
+            # Print the west walls and cell boundary
+            line = ""
+            for col in range(self.m_width):
+                walls = self.walls(Location(col,row))
+                if walls.west == WALL_PRESENT:
+                    line += "|"
+                else:
+                    line += " "
+                if self.m_cost[row][col] is not None:
+                    line += f"{self.m_cost[col][row]:>3}"
+                else:
+                    line += "   "
+            walls = self.walls(Location(15,row))
+            if walls.east == WALL_PRESENT: 
+                line += "|"  # Rightmost boundary
+            else:
+                line += " " 
+            print(line)
+
+        # Print the bottom boundary
+        line = "+"
+        for col in range(self.m_width):
+            walls = self.walls(Location(col,row))
+            if walls.south == WALL_PRESENT:
+                line += "---+"
+            else:
+                line += "   +"
+        print(line)
+
     def print_maze(self,  style : int = VIEW_PLAIN) -> None:
         dir_chars = "^>v<* "
         #self.flood(self.goal())
