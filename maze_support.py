@@ -1,5 +1,18 @@
 # a place for most of the custom classes that are used
+
+
+
 import array
+import sys
+import time
+
+def millis():
+    if sys.implementation.name == 'micropython':
+        # MicroPython
+        return time.ticks_ms()
+    else:
+        # Desktop Python
+        return int(round(time.time() * 1000))
 
 WALL_UNKNOWN = 0
 WALL_PRESENT = 1
