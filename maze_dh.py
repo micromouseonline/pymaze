@@ -90,8 +90,14 @@ def showmaze():  # show the maze
     print(line)
 
 
-# flood the maze from the strt cell to the fin cell
-def floodmaze(target_cell, start_cell):
+def floodmaze(target_cell, start_cell=0):
+    """
+    Floods the maze from target_cell to all other cells.
+    The shortest path (cost) from the target cell to each 
+    other cell is stored in the cost array.
+    The start_cell parameter is not used (yet). It could be used to 
+    terminate the search early.
+   """
     global cost, walls
     cost = [MAX_COST]*MAZE_CELL_COUNT
     cost[target_cell] = 0
