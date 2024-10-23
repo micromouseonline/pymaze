@@ -6,7 +6,7 @@ The code is mostly developed from suggestions by copilot
 
 import time
 from maze_support import *
-from collections import deque
+
 
 class Maze:
     
@@ -96,12 +96,12 @@ class Maze:
 
 
     def flood(self, target_col, target_row):
-        
-        queue = deque([(target_col, target_row, 0)])
+        frontier = []
+        frontier.append((target_col, target_row, 0))
         visited = set()
 
-        while queue:
-            col, row, dist = queue.popleft()
+        while len(frontier) > 0 :
+            col, row, dist = frontier.pop(0)
 
             if (col,row) in visited:
                 continue
@@ -113,7 +113,7 @@ class Maze:
                 new_row, new_col = row + dr, col + dc
                 if 0 <= new_row < self.size and 0 <= new_col < self.size:
                     if not self.has_wall(col, row, direction) and (new_col, new_row) not in visited:
-                        queue.append((new_col, new_row, dist + 1))
+                        frontier.append((new_col, new_row, dist + 1))
 
         return self.distances
 
@@ -138,12 +138,11 @@ if __name__ == "__main__":
 
     maze.print_maze()
        
-    start_time = time.time()
-    iterations = 1000
-    for _ in range(iterations):
+    start_time = millis()
+    for _ in range(iterations()):
         distances = maze.flood(7, 7)  # Assuming the target cell is at (7, 7)
-    end_time = time.time()
+    end_time = millis()
     t = end_time - start_time
     maze.print_maze()
     print("Flood distance correct: ",maze.distances[0][0] == 20)
-    print(f"Execution Time for {iterations} iterations: {t:.6f} seconds")
+    print(f"Execution Time for {iterations()} iterations: {t:} milliseconds")
