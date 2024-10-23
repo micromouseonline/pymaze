@@ -1,25 +1,27 @@
 import os
 import sys
 
-from  maze_support import *
-
+from maze_support import *
 
 
 cost = [0]*MAZE_CELL_COUNT
 walls = [0]*MAZE_CELL_COUNT
-proclist = [0]*MAZE_CELL_COUNT
+
 
 floodfail = 0
 debug = 0
 
-def cell_id(x,y):
+
+def cell_id(x, y):
     return y + x * MAZE_SIZE
+
 
 def cell_xy(cell):
     return (cell // 16, cell % 16)
 
+
 def add_wall(cell, heading):
-    x,y = cell_xy(cell)
+    x, y = cell_xy(cell)
     if (heading == DIR_NORTH):
         walls[cell] |= NORTH_WALL
         if y < 15:
@@ -37,126 +39,114 @@ def add_wall(cell, heading):
         if x > 0:
             walls[cell-16] |= EAST_WALL
 
-def get_walls(x,y):
-    return walls[cell_id(x,y)]
 
-def get_cost(x,y):
-    return cost[cell_id(x,y)]
+def get_walls(x, y):
+    return walls[cell_id(x, y)]
+
+
+def get_cost(x, y):
+    return cost[cell_id(x, y)]
+
 
 def maze_clear():
-  walls = [0]*MAZE_CELL_COUNT
-  for x in range(16):
-      add_wall(cell_id(x,0), DIR_SOUTH)
-      add_wall(cell_id(x,15), DIR_NORTH)
-      add_wall(cell_id(0,x), DIR_WEST)
-      add_wall(cell_id(15,x), DIR_EAST)
+    walls = [0]*MAZE_CELL_COUNT
+    for x in range(16):
+        add_wall(cell_id(x, 0), DIR_SOUTH)
+        add_wall(cell_id(x, 15), DIR_NORTH)
+        add_wall(cell_id(0, x), DIR_WEST)
+        add_wall(cell_id(15, x), DIR_EAST)
 
-def showmaze(): # show the maze
-   
-  for y in range(15, -1, -1):
-      # Print the north walls and top boundary
-      line = "+"
-      for x in range(16):
-          if get_walls(x,y) & NORTH_WALL:
-              line += "---+"
-          else:
-              line += "   +"
-      print(line)
-      # Print the west walls and cell boundary
-      line = ""
-      for x in range(16):
-          if get_walls(x,y) & WEST_WALL:
-              line += "|"
-          else:
-              line += " "
-          if get_cost(x,y) is not None:
-              line += f"{get_cost(x,y):>3}"
-          else:
-              line += "   "
-      if get_walls(15,y) & EAST_WALL: 
-          line += "|"  # Rightmost boundary
-      else:
-          line += " " 
-      print(line)
 
-    # Print the bottom boundary
-  line = "+"
-  for x in range(16):
-      if get_walls(x,y) & SOUTH_WALL:
-          line += "---+"
-      else:
-          line += "   +"
-  print(line)
+def showmaze():  # show the maze
+    for y in range(15, -1, -1):
+        line = "+"
+        for x in range(16):
+            if get_walls(x, y) & NORTH_WALL:
+                line += "---+"
+            else:
+                line += "   +"
+        print(line)
+        line = ""
+        for x in range(16):
+            if get_walls(x, y) & WEST_WALL:
+                line += "|"
+            else:
+                line += " "
+            if get_cost(x, y) is not None:
+                line += f"{get_cost(x,y):>3}"
+            else:
+                line += "   "
+        if get_walls(15, y) & EAST_WALL:
+            line += "|"
+        else:
+            line += " "
+        print(line)
+    line = "+"
+    for x in range(16):
+        if get_walls(x, y) & SOUTH_WALL:
+            line += "---+"
+        else:
+            line += "   +"
+    print(line)
 
-def floodmaze(strt,fin):   # flood the maze from the strt cell to the fin cell
-   global cost, walls, floodfail, debug
-   flooded = 0            # set flag to not finished flooding yet
-   floodfail = 0          # flag to show if flood failed to complete to end point
-   curr = strt            # current cell being processed
-   floodval = 0
-   cost = [MAX_COST]*MAZE_CELL_COUNT
-   cost[strt] = 0         # set start cell flood value to one
-   n = 0                  # index for processing list array of cells to say where to add to end of list
-   nxt = 0                # pointer to the first unprocessed item on the list
-   while (flooded == 0):
-       fval = cost[curr]  # get current value of current cell
-       if ((walls[curr] & SOUTH_WALL) == 0):     # is there a gap to the SOUTH of current cell
-           if ((cost[curr - 1] == 256)):
-               cost[curr - 1] = fval + 1    # set flood value in this cell
-               proclist[n] = curr-1         # save flood cell for future processing
-               n = n + 1                        # update processing list number
-               if (proclist[n-1] == fin):       # check if finished flooding
-                   flooded = 1                  # set flag to stop loop
-       if ((walls[curr] & EAST_WALL) == 0):      # is there a gap to the EAST of current cell
-           if ((cost[curr + MAZE_SIZE] == 256)):
-               cost[curr + MAZE_SIZE] = fval + 1        # set flood value in this cell
-               proclist[n] = curr + MAZE_SIZE           # save flood cell for future processing
-               n = n + 1                        # update processing list number
-               if (proclist[n-1] == fin):           # check if finished flooding
-                   flooded = 1                      # set flag to stop loop
-       if ((walls[curr] & NORTH_WALL) == 0):     # is there a gap to the NORTH of current cell
-           if ((cost[curr + 1] == 256) ):
-               cost[curr + 1] = fval + 1    # set flood value in this cell
-               proclist[n] = curr + 1       # save flood cell for future processing
-               n = n + 1                        # update processing list number
-               if (proclist[n-1] == fin):           # check if finished flooding
-                      flooded = 1                      # set flag to stop loop
-       if ((walls[curr] & WEST_WALL) == 0):      # is there a gap to the WEST of current cell
-           if ((cost[curr - MAZE_SIZE] == 256)):
-               cost[curr - MAZE_SIZE] = fval + 1        # set flood value in this cell
-               proclist[n] = curr - MAZE_SIZE           # save flood cell for future processing
-               n = n + 1                        # update processing list number
-               if (proclist[n-1] == fin):       # check if finished flooding
-                   flooded = 1                  # set flag to stop loop
-       curr = proclist[nxt]                 # get the location of the next cell to process
-       nxt = nxt + 1                        # point to next item to process on the list
-       if (nxt > n):                        # check if flood unable to continue as no more cells accessible
-           floodfail = 1                     # set flood failure status flag
-           flooded = 1 # stop  the flooding loop
-           if (debug == 1):
-               print (strt, fin, nxt, n, proclist)
+
+# flood the maze from the strt cell to the fin cell
+def floodmaze(target_cell, start_cell):
+    global cost, walls
+    cost = [MAX_COST]*MAZE_CELL_COUNT
+    cost[target_cell] = 0
+    queue = [0]*MAZE_CELL_COUNT  # fixed size queue more efficient?
+    head = 0
+    tail = 0
+    queue[tail] = target_cell
+    tail += 1
+    while (head != tail):
+        here = queue[head]
+        head = head + 1
+        cost_here = cost[here]
+        if ((walls[here] & SOUTH_WALL) == 0):
+            if ((cost[here - 1] == MAX_COST)):
+                cost[here - 1] = cost_here + 1
+                queue[tail] = here-1
+                tail = tail + 1
+        if ((walls[here] & EAST_WALL) == 0):
+            if ((cost[here + MAZE_SIZE] == MAX_COST)):
+                cost[here + MAZE_SIZE] = cost_here + 1
+                queue[tail] = here + MAZE_SIZE
+                tail = tail + 1
+        if ((walls[here] & NORTH_WALL) == 0):
+            if ((cost[here + 1] == 256)):
+                cost[here + 1] = cost_here + 1
+                queue[tail] = here + 1
+                tail = tail + 1
+        if ((walls[here] & WEST_WALL) == 0):
+            if ((cost[here - MAZE_SIZE] == MAX_COST)):
+                cost[here - MAZE_SIZE] = cost_here + 1
+                queue[tail] = here - MAZE_SIZE
+                tail = tail + 1
 
 
 maze_clear()
-add_wall(cell_id(0, 0),DIR_EAST)
-add_wall(cell_id(7, 7),DIR_WEST)
-add_wall(cell_id(7, 7),DIR_SOUTH)
-add_wall(cell_id(8, 7),DIR_SOUTH)
-add_wall(cell_id(8, 7),DIR_EAST)
-add_wall(cell_id(8, 8),DIR_NORTH)
-add_wall(cell_id(7, 8),DIR_NORTH)
-add_wall(cell_id(7, 8),DIR_WEST)
-add_wall(cell_id(4, 4),DIR_NORTH)
-add_wall(cell_id(4, 4),DIR_EAST)
-add_wall(cell_id(4, 4),DIR_SOUTH)
-add_wall(cell_id(4, 4),DIR_WEST)
+add_wall(cell_id(0, 0), DIR_EAST)
+add_wall(cell_id(7, 7), DIR_WEST)
+add_wall(cell_id(7, 7), DIR_SOUTH)
+add_wall(cell_id(8, 7), DIR_SOUTH)
+add_wall(cell_id(8, 7), DIR_EAST)
+add_wall(cell_id(8, 8), DIR_NORTH)
+add_wall(cell_id(7, 8), DIR_NORTH)
+add_wall(cell_id(7, 8), DIR_WEST)
+add_wall(cell_id(4, 4), DIR_NORTH)
+add_wall(cell_id(4, 4), DIR_EAST)
+add_wall(cell_id(4, 4), DIR_SOUTH)
+add_wall(cell_id(4, 4), DIR_WEST)
 
 start_time = millis()
 for _ in range(iterations()):
-  floodmaze(cell_id(7,7),cell_id(0,0))
-  
+    floodmaze(cell_id(7, 7), cell_id(0, 0))
+
 end_time = millis()
 t = end_time - start_time
 showmaze()
-print("Flood distance correct: ",get_cost(0,0) == 20)
+print("Flood distance correct: ", get_cost(0, 0) == 20)
+print(f"Flood fail is {floodfail}")
 print(f"{sys.implementation.name} - maze_dh: Execution Time for {iterations()} iterations: {t:} milliseconds")
