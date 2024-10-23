@@ -51,10 +51,6 @@ def maze_clear():
       add_wall(cell_id(0,x), DIR_WEST)
       add_wall(cell_id(15,x), DIR_EAST)
 
-def floodclear(): # clear the flood table
-   for x in range(256):
-       cost[x] = numcells +1
-
 def showmaze(): # show the maze
    
   for y in range(15, -1, -1):
@@ -142,8 +138,6 @@ def floodmaze(strt,fin):   # flood the maze from the strt cell to the fin cell
                print (strt, fin, nxt, n, proclist)
 
 
-start = numcells-1
-fin = 0
 maze_clear()
 add_wall(cell_id(0, 0),DIR_EAST)
 add_wall(cell_id(7, 7),DIR_WEST)
@@ -158,16 +152,9 @@ add_wall(cell_id(4, 4),DIR_EAST)
 add_wall(cell_id(4, 4),DIR_SOUTH)
 add_wall(cell_id(4, 4),DIR_WEST)
 
-showmaze()
-floodclear()
-floodmaze(cell_id(7,7),fin)
-showmaze()
-
-
-    
 start_time = millis()
 for _ in range(iterations()):
-  floodmaze(cell_id(7,7),fin)
+  floodmaze(cell_id(7,7),cell_id(0,0))
   
 end_time = millis()
 t = end_time - start_time
