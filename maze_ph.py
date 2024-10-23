@@ -101,29 +101,30 @@ class Maze:
         while head != tail:
             x, y, dist = queue[head]
             head += 1
+            dist = dist + 1
             if (head >= QUEUE_LENGTH):
                 head = 0
             if not self.has_wall(x, y, "N") and self.cost[x][y+1] == MAX_COST:
-                queue[tail] = (x, y + 1, dist + 1)
-                self.cost[x][y+1] = dist + 1
+                queue[tail] = (x, y + 1, dist)
+                self.cost[x][y+1] = dist
                 tail += 1
                 if (tail >= QUEUE_LENGTH):
                     tail = 0
             if not self.has_wall(x, y, "E") and self.cost[x + 1][y] == MAX_COST:
-                self.cost[x + 1][y] = dist + 1
-                queue[tail] = (x + 1, y, dist + 1)
+                self.cost[x + 1][y] = dist
+                queue[tail] = (x + 1, y, dist)
                 tail += 1
                 if (tail >= QUEUE_LENGTH):
                     tail = 0
             if not self.has_wall(x, y, "S") and self.cost[x][y - 1] == MAX_COST:
-                self.cost[x][y - 1] = dist + 1
-                queue[tail] = (x, y - 1, dist + 1)
+                self.cost[x][y - 1] = dist
+                queue[tail] = (x, y - 1, dist)
                 tail += 1
                 if (tail >= QUEUE_LENGTH):
                     tail = 0
             if not self.has_wall(x, y, "W") and self.cost[x - 1][y] == MAX_COST:
-                self.cost[x - 1][y] = dist + 1
-                queue[tail] = (x - 1, y, dist + 1)
+                self.cost[x - 1][y] = dist
+                queue[tail] = (x - 1, y, dist)
                 tail += 1
                 if (tail >= QUEUE_LENGTH):
                     tail = 0
