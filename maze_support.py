@@ -22,6 +22,8 @@ def iterations():
         return 1000   
     
 MAZE_SIZE = 16
+MAZE_CELL_COUNT = MAZE_SIZE*MAZE_SIZE
+MAX_COST = 256
 
 WALL_UNKNOWN = 0
 WALL_PRESENT = 1

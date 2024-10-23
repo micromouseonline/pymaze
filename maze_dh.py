@@ -5,10 +5,10 @@ from  maze_support import *
 
 
 
-numcells = 256
-cost = [0]*numcells
-walls = [0]*numcells
-proclist = [0]*numcells
+cost = [0]*MAZE_CELL_COUNT
+walls = [0]*MAZE_CELL_COUNT
+proclist = [0]*MAZE_CELL_COUNT
+
 floodfail = 0
 debug = 0
 
@@ -44,7 +44,7 @@ def get_cost(x,y):
     return cost[cell_id(x,y)]
 
 def maze_clear():
-  walls = [0]*256
+  walls = [0]*MAZE_CELL_COUNT
   for x in range(16):
       add_wall(cell_id(x,0), DIR_SOUTH)
       add_wall(cell_id(x,15), DIR_NORTH)
@@ -90,12 +90,11 @@ def showmaze(): # show the maze
 
 def floodmaze(strt,fin):   # flood the maze from the strt cell to the fin cell
    global cost, walls, floodfail, debug
-   floodclear()           # clear the flood table to all 283
    flooded = 0            # set flag to not finished flooding yet
    floodfail = 0          # flag to show if flood failed to complete to end point
    curr = strt            # current cell being processed
    floodval = 0
-   cost = [256]*numcells
+   cost = [MAX_COST]*MAZE_CELL_COUNT
    cost[strt] = 0         # set start cell flood value to one
    n = 0                  # index for processing list array of cells to say where to add to end of list
    nxt = 0                # pointer to the first unprocessed item on the list
