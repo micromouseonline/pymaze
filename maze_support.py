@@ -20,6 +20,8 @@ def iterations():
         return 1
     else:
         return 1000   
+    
+MAZE_SIZE = 16
 
 WALL_UNKNOWN = 0
 WALL_PRESENT = 1
