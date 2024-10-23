@@ -93,26 +93,40 @@ class Maze:
         self.cost = [[MAX_COST for _ in range(
             self.size)] for _ in range(self.size)]
         QUEUE_LENGTH = 64
-        queue = [(0, 0, 0)] * QUEUE_LENGTH
+        queue = [None] * QUEUE_LENGTH
         tail = 0
         head = 0
         queue[tail] = (target_col, target_row, 0)
         tail += 1
-        visited = set()
         while head != tail:
             x, y, dist = queue[head]
             head += 1
             if (head >= QUEUE_LENGTH):
                 head = 0
-            for direction, (dx, dy) in {'N': (0, 1), 'E': (1, 0), 'S': (0, -1), 'W': (-1, 0)}.items():
-                x_new = x + dx
-                y_new = y + dy
-                if not self.has_wall(x, y, direction) and self.cost[x_new][y_new] == MAX_COST:
-                    queue[tail] = (x_new, y_new, dist + 1)
-                    self.cost[x_new][y_new] = dist + 1
-                    tail += 1
-                    if (tail >= QUEUE_LENGTH):
-                        tail = 0
+            if not self.has_wall(x, y, "N") and self.cost[x][y+1] == MAX_COST:
+                queue[tail] = (x, y + 1, dist + 1)
+                self.cost[x][y+1] = dist + 1
+                tail += 1
+                if (tail >= QUEUE_LENGTH):
+                    tail = 0
+            if not self.has_wall(x, y, "E") and self.cost[x + 1][y] == MAX_COST:
+                self.cost[x + 1][y] = dist + 1
+                queue[tail] = (x + 1, y, dist + 1)
+                tail += 1
+                if (tail >= QUEUE_LENGTH):
+                    tail = 0
+            if not self.has_wall(x, y, "S") and self.cost[x][y - 1] == MAX_COST:
+                self.cost[x][y - 1] = dist + 1
+                queue[tail] = (x, y - 1, dist + 1)
+                tail += 1
+                if (tail >= QUEUE_LENGTH):
+                    tail = 0
+            if not self.has_wall(x, y, "W") and self.cost[x - 1][y] == MAX_COST:
+                self.cost[x - 1][y] = dist + 1
+                queue[tail] = (x - 1, y, dist + 1)
+                tail += 1
+                if (tail >= QUEUE_LENGTH):
+                    tail = 0
 
         return self.cost
 
