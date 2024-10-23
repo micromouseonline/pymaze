@@ -1,5 +1,4 @@
 from maze_support import * #Location, WallInfo  # as cc #import *
-import time
 
 
 class Queue:
@@ -422,13 +421,13 @@ if __name__ == "__main__":
     maze.set_wall_state(4, 4, HDG_SOUTH, WALL_PRESENT)
     maze.set_wall_state(4, 4, HDG_WEST, WALL_PRESENT)
     
-    start_time = time.time()
-    iterations = 1000
+    start_time = millis()
+  
  
-    for _ in range(iterations):
+    for _ in range(iterations()):
         distances = maze.flood(maze.goal())  # Assuming the target cell is at (7, 7)
-    end_time = time.time()
+    end_time = millis()
     t = end_time - start_time
     maze.print_maze2()
     maze.print_maze(VIEW_COSTS)
-    print(f"Execution Time for {iterations} iterations: {t:.6f} seconds")
+    print(f"Execution Time for {iterations()} iterations: {t:} milliseconds")

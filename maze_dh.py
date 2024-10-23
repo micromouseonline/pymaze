@@ -1,6 +1,5 @@
 
-import time
-
+from  maze_support import *
 TABLEWIDTH = 16
 WALL_PRESENT = 0
 WALL_ABSENT = 1 
@@ -169,13 +168,15 @@ showmaze()
 floodclear()
 floodmaze(cell_id(7,7),fin)
 showmaze()
-start_time = time.time()
-iterations = 1000
-for _ in range(iterations):
+
+
+    
+start_time = millis()
+for _ in range(iterations()):
   floodmaze(cell_id(7,7),fin)
   
-end_time = time.time()
+end_time = millis()
 t = end_time - start_time
 showmaze()
 print("Flood distance correct: ",get_cost(0,0) == 20)
-print(f"Execution Time for {iterations} iterations: {t:.6f} seconds")
+print(f"Execution Time for {iterations()} iterations: {t:} milliseconds")
