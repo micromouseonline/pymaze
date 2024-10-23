@@ -17,9 +17,9 @@ def millis():
 
 def iterations():
     if sys.implementation.name == 'micropython':
-        return 10
+        return 1
     else:
-        return 100    
+        return 1000   
 
 WALL_UNKNOWN = 0
 WALL_PRESENT = 1
