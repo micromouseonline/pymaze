@@ -6,7 +6,8 @@ The code is mostly developed from suggestions by copilot
 
 import time
 from maze_support import *
-
+import os
+import sys
 
 class Maze:
     
@@ -96,12 +97,18 @@ class Maze:
 
 
     def flood(self, target_col, target_row):
-        frontier = []
-        frontier.append((target_col, target_row, 0))
+        frontier = [(0, 0, 0)] *100
+        tail = 0
+        head = 0
+        frontier[tail] = (target_col, target_row, 0)
+        tail += 1
         visited = set()
 
-        while len(frontier) > 0 :
-            col, row, dist = frontier.pop(0)
+        while head != tail:
+            col, row, dist = frontier[head]
+            head += 1
+            if (head >= 100):
+                head = 0
 
             if (col,row) in visited:
                 continue
@@ -113,7 +120,10 @@ class Maze:
                 new_row, new_col = row + dr, col + dc
                 if 0 <= new_row < self.size and 0 <= new_col < self.size:
                     if not self.has_wall(col, row, direction) and (new_col, new_row) not in visited:
-                        frontier.append((new_col, new_row, dist + 1))
+                        frontier[tail]=(new_col, new_row, dist + 1)
+                        tail += 1
+                        if (tail >= 100):    
+                            tail = 0
 
         return self.distances
 
@@ -145,4 +155,4 @@ if __name__ == "__main__":
     t = end_time - start_time
     maze.print_maze()
     print("Flood distance correct: ",maze.distances[0][0] == 20)
-    print(f"Execution Time for {iterations()} iterations: {t:} milliseconds")
+    print(f"{sys.implementation.name} - maze_ph: Execution Time for {iterations()} iterations: {t:} milliseconds")

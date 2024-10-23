@@ -1,3 +1,5 @@
+import os
+import sys
 
 from  maze_support import *
 TABLEWIDTH = 16
@@ -179,4 +181,4 @@ end_time = millis()
 t = end_time - start_time
 showmaze()
 print("Flood distance correct: ",get_cost(0,0) == 20)
-print(f"Execution Time for {iterations()} iterations: {t:} milliseconds")
+print(f"{sys.implementation.name} - maze_dh: Execution Time for {iterations()} iterations: {t:} milliseconds")

@@ -1,5 +1,6 @@
 from maze_support import * #Location, WallInfo  # as cc #import *
-
+import os
+import sys
 
 class Queue:
     def __init__(self, num_items=64):
@@ -430,4 +431,4 @@ if __name__ == "__main__":
     t = end_time - start_time
     maze.print_maze2()
     maze.print_maze(VIEW_COSTS)
-    print(f"Execution Time for {iterations()} iterations: {t:} milliseconds")
+    print(f"{sys.implementation.name} - maze_pb: Execution Time for {iterations()} iterations: {t:} milliseconds")
