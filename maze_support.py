@@ -32,6 +32,11 @@ VIEW_PLAIN = 0
 VIEW_COSTS = 1
 VIEW_DIRS = 2
 
+# bit masks used for wall presence
+NORTH_WALL = 1
+EAST_WALL  = 2
+SOUTH_WALL = 4
+WEST_WALL  = 8
 
 """
  * Directions are absolute and are not relative to any particular heading

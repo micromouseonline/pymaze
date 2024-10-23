@@ -2,13 +2,8 @@ import os
 import sys
 
 from  maze_support import *
-TABLEWIDTH = 16
-WALL_PRESENT = 0
-WALL_ABSENT = 1 
-NORTH = 1
-EAST  = 2
-SOUTH = 4
-WEST  = 8
+
+
 
 numcells = 256
 cost = [0]*numcells
@@ -18,29 +13,29 @@ floodfail = 0
 debug = 0
 
 def cell_id(x,y):
-    return y + x * TABLEWIDTH
+    return y + x * MAZE_SIZE
 
 def cell_xy(cell):
     return (cell // 16, cell % 16)
 
 def add_wall(cell, heading):
     x,y = cell_xy(cell)
-    if (heading == NORTH):
-        walls[cell] |= NORTH
+    if (heading == DIR_NORTH):
+        walls[cell] |= NORTH_WALL
         if y < 15:
-            walls[cell+1] |= SOUTH
-    elif (heading == EAST):
-        walls[cell] |= EAST
+            walls[cell+1] |= SOUTH_WALL
+    elif (heading == DIR_EAST):
+        walls[cell] |= EAST_WALL
         if x < 15:
-            walls[cell+16] |= WEST
-    elif (heading == SOUTH):
-        walls[cell] |= SOUTH
+            walls[cell+16] |= WEST_WALL
+    elif (heading == DIR_SOUTH):
+        walls[cell] |= SOUTH_WALL
         if y > 0:
-            walls[cell-1] |= NORTH
-    elif (heading == WEST):
-        walls[cell] |= WEST
+            walls[cell-1] |= NORTH_WALL
+    elif (heading == DIR_WEST):
+        walls[cell] |= WEST_WALL
         if x > 0:
-            walls[cell-16] |= EAST
+            walls[cell-16] |= EAST_WALL
 
 def get_walls(x,y):
     return walls[cell_id(x,y)]
@@ -51,10 +46,10 @@ def get_cost(x,y):
 def maze_clear():
   walls = [0]*256
   for x in range(16):
-      add_wall(cell_id(x,0), SOUTH)
-      add_wall(cell_id(x,15), NORTH)
-      add_wall(cell_id(0,x), WEST)
-      add_wall(cell_id(15,x), EAST)
+      add_wall(cell_id(x,0), DIR_SOUTH)
+      add_wall(cell_id(x,15), DIR_NORTH)
+      add_wall(cell_id(0,x), DIR_WEST)
+      add_wall(cell_id(15,x), DIR_EAST)
 
 def floodclear(): # clear the flood table
    for x in range(256):
@@ -66,7 +61,7 @@ def showmaze(): # show the maze
       # Print the north walls and top boundary
       line = "+"
       for x in range(16):
-          if get_walls(x,y) & NORTH:
+          if get_walls(x,y) & NORTH_WALL:
               line += "---+"
           else:
               line += "   +"
@@ -74,7 +69,7 @@ def showmaze(): # show the maze
       # Print the west walls and cell boundary
       line = ""
       for x in range(16):
-          if get_walls(x,y) & WEST:
+          if get_walls(x,y) & WEST_WALL:
               line += "|"
           else:
               line += " "
@@ -82,7 +77,7 @@ def showmaze(): # show the maze
               line += f"{get_cost(x,y):>3}"
           else:
               line += "   "
-      if get_walls(15,y) & EAST: 
+      if get_walls(15,y) & EAST_WALL: 
           line += "|"  # Rightmost boundary
       else:
           line += " " 
@@ -91,7 +86,7 @@ def showmaze(): # show the maze
     # Print the bottom boundary
   line = "+"
   for x in range(16):
-      if get_walls(x,y) & SOUTH:
+      if get_walls(x,y) & SOUTH_WALL:
           line += "---+"
       else:
           line += "   +"
@@ -110,31 +105,31 @@ def floodmaze(strt,fin):   # flood the maze from the strt cell to the fin cell
    nxt = 0                # pointer to the first unprocessed item on the list
    while (flooded == 0):
        fval = cost[curr]  # get current value of current cell
-       if ((walls[curr] & SOUTH) == 0):     # is there a gap to the SOUTH of current cell
+       if ((walls[curr] & SOUTH_WALL) == 0):     # is there a gap to the SOUTH of current cell
            if ((cost[curr - 1] == 256)):
                cost[curr - 1] = fval + 1    # set flood value in this cell
                proclist[n] = curr-1         # save flood cell for future processing
                n = n + 1                        # update processing list number
                if (proclist[n-1] == fin):       # check if finished flooding
                    flooded = 1                  # set flag to stop loop
-       if ((walls[curr] & EAST) == 0):      # is there a gap to the EAST of current cell
-           if ((cost[curr + TABLEWIDTH] == 256)):
-               cost[curr + TABLEWIDTH] = fval + 1        # set flood value in this cell
-               proclist[n] = curr + TABLEWIDTH           # save flood cell for future processing
+       if ((walls[curr] & EAST_WALL) == 0):      # is there a gap to the EAST of current cell
+           if ((cost[curr + MAZE_SIZE] == 256)):
+               cost[curr + MAZE_SIZE] = fval + 1        # set flood value in this cell
+               proclist[n] = curr + MAZE_SIZE           # save flood cell for future processing
                n = n + 1                        # update processing list number
                if (proclist[n-1] == fin):           # check if finished flooding
                    flooded = 1                      # set flag to stop loop
-       if ((walls[curr] & NORTH) == 0):     # is there a gap to the NORTH of current cell
+       if ((walls[curr] & NORTH_WALL) == 0):     # is there a gap to the NORTH of current cell
            if ((cost[curr + 1] == 256) ):
                cost[curr + 1] = fval + 1    # set flood value in this cell
                proclist[n] = curr + 1       # save flood cell for future processing
                n = n + 1                        # update processing list number
                if (proclist[n-1] == fin):           # check if finished flooding
                       flooded = 1                      # set flag to stop loop
-       if ((walls[curr] & WEST) == 0):      # is there a gap to the WEST of current cell
-           if ((cost[curr - TABLEWIDTH] == 256)):
-               cost[curr - TABLEWIDTH] = fval + 1        # set flood value in this cell
-               proclist[n] = curr - TABLEWIDTH           # save flood cell for future processing
+       if ((walls[curr] & WEST_WALL) == 0):      # is there a gap to the WEST of current cell
+           if ((cost[curr - MAZE_SIZE] == 256)):
+               cost[curr - MAZE_SIZE] = fval + 1        # set flood value in this cell
+               proclist[n] = curr - MAZE_SIZE           # save flood cell for future processing
                n = n + 1                        # update processing list number
                if (proclist[n-1] == fin):       # check if finished flooding
                    flooded = 1                  # set flag to stop loop
@@ -150,21 +145,18 @@ def floodmaze(strt,fin):   # flood the maze from the strt cell to the fin cell
 start = numcells-1
 fin = 0
 maze_clear()
-add_wall(cell_id(0, 0),EAST)
-
-add_wall(cell_id(7, 7),WEST)
-add_wall(cell_id(7, 7),SOUTH)
-add_wall(cell_id(8, 7),SOUTH)
-add_wall(cell_id(8, 7),EAST)
-# add_wall(cell_id(8, 8),EAST)
-add_wall(cell_id(8, 8),NORTH)
-add_wall(cell_id(7, 8),NORTH)
-add_wall(cell_id(7, 8),WEST)
-
-add_wall(cell_id(4, 4),NORTH)
-add_wall(cell_id(4, 4),EAST)
-add_wall(cell_id(4, 4),SOUTH)
-add_wall(cell_id(4, 4),WEST)
+add_wall(cell_id(0, 0),DIR_EAST)
+add_wall(cell_id(7, 7),DIR_WEST)
+add_wall(cell_id(7, 7),DIR_SOUTH)
+add_wall(cell_id(8, 7),DIR_SOUTH)
+add_wall(cell_id(8, 7),DIR_EAST)
+add_wall(cell_id(8, 8),DIR_NORTH)
+add_wall(cell_id(7, 8),DIR_NORTH)
+add_wall(cell_id(7, 8),DIR_WEST)
+add_wall(cell_id(4, 4),DIR_NORTH)
+add_wall(cell_id(4, 4),DIR_EAST)
+add_wall(cell_id(4, 4),DIR_SOUTH)
+add_wall(cell_id(4, 4),DIR_WEST)
 
 showmaze()
 floodclear()
