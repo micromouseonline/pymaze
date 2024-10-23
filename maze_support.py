@@ -32,11 +32,6 @@ VIEW_PLAIN = 0
 VIEW_COSTS = 1
 VIEW_DIRS = 2
 
-# bit masks used for wall presence
-NORTH_WALL = 1
-EAST_WALL  = 2
-SOUTH_WALL = 4
-WEST_WALL  = 8
 
 """
  * Directions are absolute and are not relative to any particular heading
@@ -47,6 +42,12 @@ DIR_SOUTH = 2
 DIR_WEST = 3
 DIR_COUNT = 4
 DIR_BLOCKED = -1
+
+# bit masks used for wall presence
+NORTH_WALL = (1 << DIR_NORTH)
+EAST_WALL  = (1 << DIR_EAST)
+SOUTH_WALL = (1 << DIR_SOUTH)
+WEST_WALL  = (1 << DIR_WEST)
 
 """
  * Heading represents the direction that the robot is facing. 
