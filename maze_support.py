@@ -13,6 +13,13 @@ def millis():
     else:
         # Desktop Python
         return int(round(time.time() * 1000))
+    
+
+def iterations():
+    if sys.implementation.name == 'micropython':
+        return 10
+    else:
+        return 100    
 
 WALL_UNKNOWN = 0
 WALL_PRESENT = 1
