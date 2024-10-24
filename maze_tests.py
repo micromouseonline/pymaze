@@ -30,10 +30,22 @@ t = millis()
 for i in range(iterations()):
     clear_lin_cost()
 t = millis() - t
-print(f"Linear: {t:} millisseconds")
+print(f"init in loop - List: {t:} millisseconds")
 
 t = millis() 
 for i in range(iterations()):
     clear_xy_cost()
 t = millis() - t 
-print(f"XY: {t:} milliseconds")            
+print(f"init in loop - list of lists: {t:} milliseconds")            
+
+t = millis() 
+for i in range(iterations()):
+    cost_lin = [0]*256
+t = millis() - t 
+print(f"list comprehension - 'cost_lin = [0]*256'   : {t:} milliseconds")            
+
+t = millis() 
+for i in range(iterations()):
+    cost_lin = [[0]*16 for _ in range(16)]
+t = millis() - t 
+print(f"list comprehension - 'cost_lin = [[0]*16 for _ in range(16)]'   : {t:} milliseconds")            
