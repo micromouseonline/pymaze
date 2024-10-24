@@ -90,44 +90,33 @@ class Maze:
         print(line)
 
     def flood(self, target_col, target_row):
-        self.cost = [[MAX_COST for _ in range(
-            self.size)] for _ in range(self.size)]
-        QUEUE_LENGTH = 64
-        queue = [None] * QUEUE_LENGTH
-        tail = 0
+        # Initialize cost matrix and queue
+        self.cost = [[MAX_COST] * self.size for _ in range(self.size)]
+        queue = [(target_col, target_row, 0)]  # dynamic queue
+        self.cost[target_col][target_row] = 0  # Set target to zero distance
+
         head = 0
-        queue[tail] = (target_col, target_row, 0)
-        tail += 1
-        while head != tail:
+        while head < len(queue):
             x, y, dist = queue[head]
             head += 1
-            dist = dist + 1
-            if (head >= QUEUE_LENGTH):
-                head = 0
-            if not self.has_wall(x, y, DIR_NORTH) and self.cost[x][y+1] == MAX_COST:
-                queue[tail] = (x, y + 1, dist)
-                self.cost[x][y+1] = dist
-                tail += 1
-                if (tail >= QUEUE_LENGTH):
-                    tail = 0
+            dist += 1
+
+            # Check and update neighboring cells
+            if not self.has_wall(x, y, DIR_NORTH) and self.cost[x][y + 1] == MAX_COST:
+                self.cost[x][y + 1] = dist
+                queue.append((x, y + 1, dist))
+
             if not self.has_wall(x, y, DIR_EAST) and self.cost[x + 1][y] == MAX_COST:
                 self.cost[x + 1][y] = dist
-                queue[tail] = (x + 1, y, dist)
-                tail += 1
-                if (tail >= QUEUE_LENGTH):
-                    tail = 0
+                queue.append((x + 1, y, dist))
+
             if not self.has_wall(x, y, DIR_SOUTH) and self.cost[x][y - 1] == MAX_COST:
                 self.cost[x][y - 1] = dist
-                queue[tail] = (x, y - 1, dist)
-                tail += 1
-                if (tail >= QUEUE_LENGTH):
-                    tail = 0
+                queue.append((x, y - 1, dist))
+
             if not self.has_wall(x, y, DIR_WEST) and self.cost[x - 1][y] == MAX_COST:
                 self.cost[x - 1][y] = dist
-                queue[tail] = (x - 1, y, dist)
-                tail += 1
-                if (tail >= QUEUE_LENGTH):
-                    tail = 0
+                queue.append((x - 1, y, dist))
 
         return self.cost
 
