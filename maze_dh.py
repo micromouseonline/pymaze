@@ -115,9 +115,9 @@ def floodmaze(target_cell, start_cell=0):
         here = queue[head]
         head += 1
         cost_here = cost[here]
-
+        walls_here = walls[here]
         # Handle SOUTH_WALL (cell - 1)
-        if (walls[here] & SOUTH_WALL) == 0:
+        if (walls_here & SOUTH_WALL) == 0:
             south_cell = here - 1
             if cost[south_cell] == MAX_COST:
                 cost[south_cell] = cost_here + 1
@@ -125,7 +125,7 @@ def floodmaze(target_cell, start_cell=0):
                 tail += 1
 
         # Handle EAST_WALL (cell + MAZE_SIZE)
-        if (walls[here] & EAST_WALL) == 0:
+        if (walls_here & EAST_WALL) == 0:
             east_cell = here + MAZE_SIZE
             if cost[east_cell] == MAX_COST:
                 cost[east_cell] = cost_here + 1
@@ -133,7 +133,7 @@ def floodmaze(target_cell, start_cell=0):
                 tail += 1
 
         # Handle NORTH_WALL (cell + 1)
-        if (walls[here] & NORTH_WALL) == 0:
+        if (walls_here & NORTH_WALL) == 0:
             north_cell = here + 1
             if cost[north_cell] == MAX_COST:
                 cost[north_cell] = cost_here + 1
@@ -141,7 +141,7 @@ def floodmaze(target_cell, start_cell=0):
                 tail += 1
 
         # Handle WEST_WALL (cell - MAZE_SIZE)
-        if (walls[here] & WEST_WALL) == 0:
+        if (walls_here & WEST_WALL) == 0:
             west_cell = here - MAZE_SIZE
             if cost[west_cell] == MAX_COST:
                 cost[west_cell] = cost_here + 1
