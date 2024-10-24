@@ -46,7 +46,6 @@ class Maze:
         self.m_walls = [[WallInfo() for i in range(size)] for j in range(size)] 
         self.m_cost =  [[0 for i in range(size)] for j in range(size)]   
         self.m_goal =  Location(7,7, size)
-        start.mazeHeight = size
         start.size = size
         self.m_start = Location(0,0, size)
         self.m_maze_cell_count = size * size
@@ -60,7 +59,6 @@ class Maze:
 
     #changes the default goal. For example in a practice maze
     def set_goal(self, goal : Location) -> None :
-        goal.mazeHeight = self.m_height
         goal.size = self.m_width
         self.m_goal = goal
 
@@ -105,8 +103,7 @@ class Maze:
 
     # only change a wall if it is unknown
     # This is what you use when exploring. Once seen, a wall should not be changed again.
-    def update_wall_state(self,  cell : Location, heading : int, state : int) -> None :
-
+    def update_wall_state(self,  cell : Location, heading : int, state : int = WALL_ABSENT) -> None :
         if heading == HDG_NORTH :
             if (self.m_walls[cell.x][cell.y].north  != WALL_UNKNOWN) :
                 return
@@ -193,7 +190,6 @@ class Maze:
         while (queue.size() > 0) :
             here = queue.head()
             here.size = self.m_width
-            here.mazeHeight = self.m_height # Bit of a bodge to stop errors on small maze sizes
             newCost = m_cost[here.x][here.y] + 1
             
             for h in range(HDG_COUNT) : # (int h = NORTH; h < HEADING_COUNT; h++) {
