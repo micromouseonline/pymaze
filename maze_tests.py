@@ -14,8 +14,8 @@ def iterations():
 
 print(sys.implementation.name)
 print("start...")
-cost_lin = [0]*256
-cost_xy = [[0]*16]*16
+cost_lin = [0 for _ in range(256)]
+cost_xy = [[0 for _ in range(16)] for _ in range(16)] # this is correct
 
 def clear_lin_cost():
     for i in range(256):
