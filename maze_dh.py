@@ -96,40 +96,59 @@ def floodmaze(target_cell, start_cell=0):
     The shortest path (cost) from the target cell to each 
     other cell is stored in the cost array.
     The start_cell parameter is not used (yet). It could be used to 
-    terminate the search early.
-   """
+    terminate the search early. 
+
+    Optimized flood fill for the maze. This version improves
+    performance by reducing redundant checks and making queue handling more efficient.
+    """
     global cost, walls
-    cost = [MAX_COST]*MAZE_CELL_COUNT
+    cost = [MAX_COST] * MAZE_CELL_COUNT
     cost[target_cell] = 0
-    queue = [0]*MAZE_CELL_COUNT  # fixed size queue more efficient?
+
+    # Static size queue - no modulo needed
+    queue = [0] * MAZE_CELL_COUNT
     head = 0
-    tail = 0
-    queue[tail] = target_cell
-    tail += 1
-    while (head != tail):
+    tail = 1
+    queue[0] = target_cell
+
+    while head < tail:
         here = queue[head]
-        head = head + 1
+        head += 1
         cost_here = cost[here]
-        if ((walls[here] & SOUTH_WALL) == 0):
-            if ((cost[here - 1] == MAX_COST)):
-                cost[here - 1] = cost_here + 1
-                queue[tail] = here-1
-                tail = tail + 1
-        if ((walls[here] & EAST_WALL) == 0):
-            if ((cost[here + MAZE_SIZE] == MAX_COST)):
-                cost[here + MAZE_SIZE] = cost_here + 1
-                queue[tail] = here + MAZE_SIZE
-                tail = tail + 1
-        if ((walls[here] & NORTH_WALL) == 0):
-            if ((cost[here + 1] == 256)):
-                cost[here + 1] = cost_here + 1
-                queue[tail] = here + 1
-                tail = tail + 1
-        if ((walls[here] & WEST_WALL) == 0):
-            if ((cost[here - MAZE_SIZE] == MAX_COST)):
-                cost[here - MAZE_SIZE] = cost_here + 1
-                queue[tail] = here - MAZE_SIZE
-                tail = tail + 1
+
+        # Handle SOUTH_WALL (cell - 1)
+        if (walls[here] & SOUTH_WALL) == 0:
+            south_cell = here - 1
+            if cost[south_cell] == MAX_COST:
+                cost[south_cell] = cost_here + 1
+                queue[tail] = south_cell
+                tail += 1
+
+        # Handle EAST_WALL (cell + MAZE_SIZE)
+        if (walls[here] & EAST_WALL) == 0:
+            east_cell = here + MAZE_SIZE
+            if cost[east_cell] == MAX_COST:
+                cost[east_cell] = cost_here + 1
+                queue[tail] = east_cell
+                tail += 1
+
+        # Handle NORTH_WALL (cell + 1)
+        if (walls[here] & NORTH_WALL) == 0:
+            north_cell = here + 1
+            if cost[north_cell] == MAX_COST:
+                cost[north_cell] = cost_here + 1
+                queue[tail] = north_cell
+                tail += 1
+
+        # Handle WEST_WALL (cell - MAZE_SIZE)
+        if (walls[here] & WEST_WALL) == 0:
+            west_cell = here - MAZE_SIZE
+            if cost[west_cell] == MAX_COST:
+                cost[west_cell] = cost_here + 1
+                queue[tail] = west_cell
+                tail += 1
+
+    return cost
 
 
 maze_clear()
