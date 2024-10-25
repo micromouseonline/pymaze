@@ -1,7 +1,5 @@
 """
-maze-ph.py
-A simple, naive implementation of the maze and manhattan flood algorithm
-The code is mostly developed from suggestions by copilot
+maze.py
 """
 
 import time
@@ -243,4 +241,4 @@ if __name__ == "__main__":
     maze.print_maze(VIEW_COSTS, OPEN_MAZE_MASK)
     maze.print_maze(VIEW_COSTS, CLOSED_MAZE_MASK)
     print("Flood distance correct: ", maze.cost[0] == 20)
-    print(f"{sys.implementation.name} - maze_ph: Execution Time for {iterations()} iterations: {t:} milliseconds")
+    print(f"{sys.implementation.name} - maze: Execution Time for {iterations()} iterations: {t:} milliseconds")
