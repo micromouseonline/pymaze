@@ -3,6 +3,21 @@ import sys
 
 from maze_support import *
 
+DIR_NORTH = 0
+DIR_EAST = 1
+DIR_SOUTH = 2
+DIR_WEST = 3
+DIR_COUNT = 4
+DIR_BLOCKED = -1
+
+# bit masks used for wall presence
+NORTH_WALL = (1 << DIR_NORTH)
+EAST_WALL = (1 << DIR_EAST)
+SOUTH_WALL = (1 << DIR_SOUTH)
+WEST_WALL = (1 << DIR_WEST)
+
+MAZE_SIZE = 16
+MAZE_CELL_COUNT = MAZE_SIZE * MAZE_SIZE
 
 cost = [0]*MAZE_CELL_COUNT
 walls = [0]*MAZE_CELL_COUNT
