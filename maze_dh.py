@@ -113,6 +113,9 @@ def floodmaze(target_cell, start_cell=0):
 
     while head < tail:
         here = queue[head]
+        # you can optionally terminate the flood at the start_cell
+        # if here == start_cell:
+        #     break
         head += 1
         cost_here = cost[here]
         walls_here = walls[here]
