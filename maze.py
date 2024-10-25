@@ -38,17 +38,21 @@ class Maze:
         self.walls[cell] &= mask
         self.walls[cell] |= wall
         if direction == DIR_NORTH and y < self.size - 1:
-            self.walls[self.cell_id(x, y + 1)] &= ~(WALL_MASK << DIR_SOUTH * 2)
-            self.walls[self.cell_id(x, y + 1)] |= (state << DIR_SOUTH * 2)
+            next = self.neighbour(cell, DIR_NORTH)
+            self.walls[next] &= ~(WALL_MASK << DIR_SOUTH * 2)
+            self.walls[next] |= (state << DIR_SOUTH * 2)
         elif direction == DIR_EAST and x < self.size - 1:
-            self.walls[self.cell_id(x + 1, y)] &= ~(WALL_MASK << DIR_WEST * 2)
-            self.walls[self.cell_id(x + 1, y)] |= (state << DIR_WEST * 2)
+            next = self.neighbour(cell, DIR_EAST)
+            self.walls[next] &= ~(WALL_MASK << DIR_WEST * 2)
+            self.walls[next] |= (state << DIR_WEST * 2)
         elif direction == DIR_SOUTH and y > 0:
-            self.walls[self.cell_id(x, y - 1)] &= ~(WALL_MASK << DIR_NORTH * 2)
-            self.walls[self.cell_id(x, y - 1)] |= (state << DIR_NORTH * 2)
+            next = self.neighbour(cell, DIR_SOUTH)
+            self.walls[next] &= ~(WALL_MASK << DIR_NORTH * 2)
+            self.walls[next] |= (state << DIR_NORTH * 2)
         elif direction == DIR_WEST and x > 0:
-            self.walls[self.cell_id(x - 1, y)] &= ~(WALL_MASK << DIR_EAST * 2)
-            self.walls[self.cell_id(x - 1, y)] |= (state << DIR_EAST * 2)
+            next = self.neighbour(cell, DIR_WEST)
+            self.walls[next] &= ~(WALL_MASK << DIR_EAST * 2)
+            self.walls[next] |= (state << DIR_EAST * 2)
 
     def set_mask(self, mask):
         self.mask = mask
