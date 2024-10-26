@@ -50,17 +50,16 @@ class Maze:
                         len(lines[0]) // COL_DIVISOR)
         self.walls = [ALL_UNKNOWN for _ in range(self.size * self.size)]
         cell_y = self.size - 1
-
         for i, line in enumerate(lines):
             if i >= ROW_DIVISOR * self.size:
                 continue
             line = line.rstrip()  # remove \n
-            if i % ROW_DIVISOR == 0:  # +---+---+---+---+
+            if i % ROW_DIVISOR == 0:  # north walls
                 for cell_x, c in enumerate(line[2::COL_DIVISOR]):
                     wall_state = WALL_PRESENT if c == '-' else WALL_ABSENT
                     self.update_wall(self.cell_id(
                         cell_x, cell_y), DIR_NORTH, wall_state)
-            else:  # |   |   | G |   |
+            else:  # west walls
                 wall_chars = line[0::COL_DIVISOR][:-1]
                 for x, c in enumerate(wall_chars):
                     wall_state = WALL_PRESENT if c == '|' else WALL_ABSENT
@@ -72,7 +71,7 @@ class Maze:
                     self.size - 1, cell_y), DIR_EAST, wall_state)
             cell_y -= i % ROW_DIVISOR
 
-        # special case for the bottom
+        # special case for the last line
         cell_y = 0
         for cell_x, c in enumerate(line[2::COL_DIVISOR]):
             wall_state = WALL_PRESENT if c == '-' else WALL_ABSENT
