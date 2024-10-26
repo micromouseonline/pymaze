@@ -32,6 +32,11 @@ class Maze:
         maze.set_wall(0, DIR_EAST, WALL_PRESENT)
 
     def set_wall(self, cell, direction, state):
+        """
+        Unconditionally set the state of a single wall in the maze
+        This would normally only get used when initialising the maze - either
+        as a blank maze or when copying a pre-defined maze
+        """
         x, y = self.cell_xy(cell)
         wall = state << direction * 2
         mask = ~(WALL_MASK << direction * 2)
@@ -55,6 +60,11 @@ class Maze:
             self.walls[next] |= (state << DIR_EAST * 2)
 
     def update_wall(self, cell, direction, state):
+        """
+        Use this to update the maze while exploring. 
+        It will ensure that wal state can only be changed once.
+        If you absolutely, positively have to set the wall state, use set_wall.
+        """
         this_wall = (self.walls[cell] >> direction * 2) & WALL_MASK
         if this_wall != WALL_UNKNOWN:
             return
