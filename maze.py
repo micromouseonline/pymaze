@@ -30,6 +30,7 @@ class Maze:
             maze.set_wall(self.cell_id(0, cell), DIR_WEST,  WALL_PRESENT)
             maze.set_wall(self.cell_id(15, cell), DIR_EAST, WALL_PRESENT)
         maze.set_wall(0, DIR_EAST, WALL_PRESENT)
+        maze.set_wall(0, DIR_NORTH, WALL_ABSENT)
 
     def set_wall(self, cell, direction, state):
         """
