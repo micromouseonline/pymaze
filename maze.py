@@ -322,6 +322,16 @@ class Maze:
 
         return self.cost[0]
 
+    def has_solution(self):
+        mask = self.mask
+        self.mask = OPEN_MAZE_MASK
+        open_result = self.flood(self.goal())
+
+        self.mask = CLOSED_MAZE_MASK
+        closed_result = self.flood(self.goal())
+        self.mask = mask
+        return open_result == closed_result
+
 
 if __name__ == "__main__":
     # Example usage
