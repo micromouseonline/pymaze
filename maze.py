@@ -65,11 +65,13 @@ class Maze:
         Does not set the goal area
         """
         self.walls = [ALL_UNKNOWN for _ in range(self.size * self.size)]
-        for cell in range(16):
+        for cell in range(self.size):
             maze.set_wall(self.cell_id(cell, 0), DIR_SOUTH, WALL_PRESENT)
-            maze.set_wall(self.cell_id(cell, 15), DIR_NORTH, WALL_PRESENT)
+            maze.set_wall(self.cell_id(cell, self.size-1),
+                          DIR_NORTH, WALL_PRESENT)
             maze.set_wall(self.cell_id(0, cell), DIR_WEST,  WALL_PRESENT)
-            maze.set_wall(self.cell_id(15, cell), DIR_EAST, WALL_PRESENT)
+            maze.set_wall(self.cell_id(self.size-1, cell),
+                          DIR_EAST, WALL_PRESENT)
         maze.set_wall(0, DIR_EAST, WALL_PRESENT)
         maze.set_wall(0, DIR_NORTH, WALL_ABSENT)
 
