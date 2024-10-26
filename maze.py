@@ -39,45 +39,39 @@ class Maze:
         maze.set_wall(0, DIR_NORTH, WALL_ABSENT)
 
     def init_walls_from_string(self, lines):
-        self.size = max(len(lines) // 2, len(lines[0]) // 4)
+        ROW_DIVISOR = 2
+        COL_DIVISOR = 4
+        self.size = max(len(lines) // ROW_DIVISOR,
+                        len(lines[0]) // COL_DIVISOR)
         self.walls = [ALL_UNKNOWN for _ in range(self.size * self.size)]
-        cell_y = 15
+        cell_y = self.size - 1
+
         for i, line in enumerate(lines):
-            if i >= 2 * self.size:
+            if i >= ROW_DIVISOR * self.size:
                 continue
             line = line.rstrip()  # remove \n
-            if i % 2 == 0:  # +---+---+---+---+
-                # look at every 4th character, starting at the third character
-                for cell_x, c in enumerate(line[2::4]):
-                    wall_state = WALL_ABSENT
-                    if c == '-':
-                        wall_state = WALL_PRESENT
-                    self.update_wall(self.cell_id(cell_x, cell_y),
-                                     DIR_NORTH, wall_state)
+            if i % ROW_DIVISOR == 0:  # +---+---+---+---+
+                for cell_x, c in enumerate(line[2::COL_DIVISOR]):
+                    wall_state = WALL_PRESENT if c == '-' else WALL_ABSENT
+                    self.update_wall(self.cell_id(
+                        cell_x, cell_y), DIR_NORTH, wall_state)
             else:  # |   |   | G |   |
-                # look at every 4th character, starting at the first character
-                wall_chars = line[0::4][:-1]
+                wall_chars = line[0::COL_DIVISOR][:-1]
                 for x, c in enumerate(wall_chars):
-                    wall_state = WALL_ABSENT
-                    if c == '|':
-                        wall_state = WALL_PRESENT
+                    wall_state = WALL_PRESENT if c == '|' else WALL_ABSENT
                     self.update_wall(self.cell_id(x, cell_y),
                                      DIR_WEST, wall_state)
                 # special case for the last character
-                wall_state = WALL_ABSENT
-                if line[-1] == '|':
-                    wall_state = WALL_PRESENT
-                self.update_wall(self.cell_id(self.size - 1, cell_y),
-                                 DIR_EAST, wall_state)
-            cell_y -= i % 2
+                wall_state = WALL_PRESENT if line[-1] == '|' else WALL_ABSENT
+                self.update_wall(self.cell_id(
+                    self.size - 1, cell_y), DIR_EAST, wall_state)
+            cell_y -= i % ROW_DIVISOR
+
         # special case for the bottom
         cell_y = 0
-        for cell_x, c in enumerate(line[2::4]):
-            wall_state = WALL_ABSENT
-            if c == '-':
-                wall_state = WALL_PRESENT
-            self.set_wall(self.cell_id(cell_x, cell_y),
-                          DIR_SOUTH, wall_state)
+        for cell_x, c in enumerate(line[2::COL_DIVISOR]):
+            wall_state = WALL_PRESENT if c == '-' else WALL_ABSENT
+            self.set_wall(self.cell_id(cell_x, cell_y), DIR_SOUTH, wall_state)
         return
 
     def set_wall(self, cell, direction, state):
