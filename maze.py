@@ -116,6 +116,8 @@ class Maze:
         This would normally only get used when initialising the maze - either
         as a blank maze or when copying a pre-defined maze
         """
+        if cell < 0 or cell >= self.size * self.size:
+            return
         x, y = self.cell_xy(cell)
         wall = state << direction * 2
         mask = ~(WALL_MASK << direction * 2)
@@ -144,6 +146,8 @@ class Maze:
         It will ensure that wall state can only be changed once.
         If you absolutely, positively have to set the wall state, use set_wall.
         """
+        if cell < 0 or cell >= self.size * self.size:
+            return
         this_wall = (self.walls[cell] >> direction * 2) & WALL_MASK
         if this_wall != WALL_UNKNOWN:
             return
