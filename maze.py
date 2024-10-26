@@ -13,7 +13,7 @@ class Maze:
     def __init__(self, size=16):
         self.size = size
         self.cost = [MAX_COST for _ in range(self.size * self.size)]
-        self.walls = {None for _ in range(self.size * self.size)}
+        self.walls = {ALL_UNKNOWN for _ in range(self.size * self.size)}
         self.mask = OPEN_MAZE_MASK
 
     def cell_id(self, x, y):
@@ -23,7 +23,7 @@ class Maze:
         return (cell // self.size, cell % self.size)
 
     def clear_walls(self):
-        self.walls = [0 for _ in range(self.size * self.size)]
+        self.walls = [ALL_UNKNOWN for _ in range(self.size * self.size)]
         for cell in range(16):
             maze.set_wall(self.cell_id(cell, 0), DIR_SOUTH, WALL_PRESENT)
             maze.set_wall(self.cell_id(cell, 15), DIR_NORTH, WALL_PRESENT)
@@ -53,6 +53,12 @@ class Maze:
             next = self.neighbour(cell, DIR_WEST)
             self.walls[next] &= ~(WALL_MASK << DIR_EAST * 2)
             self.walls[next] |= (state << DIR_EAST * 2)
+
+    def update_wall(self, cell, direction, state):
+        this_wall = (self.walls[cell] >> direction * 2) & WALL_MASK
+        if this_wall != WALL_UNKNOWN:
+            return
+        self.set_wall(cell, direction, state)
 
     def set_mask(self, mask):
         self.mask = mask
@@ -113,16 +119,13 @@ class Maze:
 
     def flood(self, target_cell):
         """
-        This flood method treats the maze as 'closed' that is, only confirmed exits are
-        used in the flood.
-
         While exploring, the 'open' view should be used to find exits. This is  
         accomplished by adding a class variable which is used to set the mask used when 
         examining maze walls.
 
         The 'closed' view should be used to find the shortest path.
 
-        For better performance, the flood method makes use its the intimate knowledge it has
+        For better performance, the flood method makes use of the intimate knowledge it has
         about the maze. This is not ideal in terms of maintentance but speed is king.
 
         """
@@ -219,19 +222,19 @@ if __name__ == "__main__":
     maze = Maze()
 
     maze.clear_walls()
-    maze.set_wall(maze.cell_id(7, 7), DIR_WEST, WALL_PRESENT)
-    maze.set_wall(maze.cell_id(7, 7), DIR_SOUTH, WALL_PRESENT)
-    maze.set_wall(maze.cell_id(8, 7), DIR_SOUTH, WALL_PRESENT)
-    maze.set_wall(maze.cell_id(8, 7), DIR_EAST, WALL_PRESENT)
-    maze.set_wall(maze.cell_id(8, 8), DIR_EAST, WALL_ABSENT)
-    maze.set_wall(maze.cell_id(8, 8), DIR_NORTH, WALL_PRESENT)
-    maze.set_wall(maze.cell_id(7, 8), DIR_NORTH, WALL_PRESENT)
-    maze.set_wall(maze.cell_id(7, 8), DIR_WEST, WALL_PRESENT)
+    maze.update_wall(maze.cell_id(7, 7), DIR_WEST, WALL_PRESENT)
+    maze.update_wall(maze.cell_id(7, 7), DIR_SOUTH, WALL_PRESENT)
+    maze.update_wall(maze.cell_id(8, 7), DIR_SOUTH, WALL_PRESENT)
+    maze.update_wall(maze.cell_id(8, 7), DIR_EAST, WALL_PRESENT)
+    maze.update_wall(maze.cell_id(8, 8), DIR_EAST, WALL_ABSENT)
+    maze.update_wall(maze.cell_id(8, 8), DIR_NORTH, WALL_PRESENT)
+    maze.update_wall(maze.cell_id(7, 8), DIR_NORTH, WALL_PRESENT)
+    maze.update_wall(maze.cell_id(7, 8), DIR_WEST, WALL_PRESENT)
     # check that a closed off area does not get flooded
-    maze.set_wall(maze.cell_id(4, 4), DIR_NORTH, WALL_PRESENT)
-    maze.set_wall(maze.cell_id(4, 4), DIR_EAST, WALL_PRESENT)
-    maze.set_wall(maze.cell_id(4, 4), DIR_SOUTH, WALL_PRESENT)
-    maze.set_wall(maze.cell_id(4, 4), DIR_WEST, WALL_PRESENT)
+    maze.update_wall(maze.cell_id(4, 4), DIR_NORTH, WALL_PRESENT)
+    maze.update_wall(maze.cell_id(4, 4), DIR_EAST, WALL_PRESENT)
+    maze.update_wall(maze.cell_id(4, 4), DIR_SOUTH, WALL_PRESENT)
+    maze.update_wall(maze.cell_id(4, 4), DIR_WEST, WALL_PRESENT)
 
     maze.print_maze()
 
