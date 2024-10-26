@@ -20,6 +20,35 @@ import sys
  '''
 
 
+WALL_ABSENT = 0
+WALL_PRESENT = 1
+WALL_UNKNOWN = 2
+WALL_VIRTUAL = 3
+WALL_MASK = 3
+
+ALL_UNKNOWN = 0b10101010
+
+CLOSED_MAZE_MASK = 3
+OPEN_MAZE_MASK = 1
+
+
+# ways we can represent the maze as a string
+VIEW_PLAIN = 0
+VIEW_COSTS = 1
+VIEW_DIRS = 2
+
+"""
+ * Directions are absolute and are not relative to any particular heading
+ * these are maze things
+"""
+DIR_NORTH = 0
+DIR_EAST = 1
+DIR_SOUTH = 2
+DIR_WEST = 3
+DIR_COUNT = 4
+DIR_BLOCKED = -1
+
+
 class Location:
     # TODO this class has a big reliance on the overall maze size. Need to find a way to have this set once for each run rather than keep passing it around from the maze object
     # TODO type hinting fails for methods that return an instance of theselves.

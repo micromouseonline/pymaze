@@ -4,15 +4,45 @@ maze.py
 
 import time
 from maze_support import *
+from maze_files import *
 import os
 import sys
+
+
+WALL_ABSENT = 0
+WALL_PRESENT = 1
+WALL_UNKNOWN = 2
+WALL_VIRTUAL = 3
+WALL_MASK = 3
+
+ALL_UNKNOWN = 0b10101010
+
+CLOSED_MAZE_MASK = 3
+OPEN_MAZE_MASK = 1
+
+
+# ways we can represent the maze as a string
+VIEW_PLAIN = 0
+VIEW_COSTS = 1
+VIEW_DIRS = 2
+
+"""
+ * Directions are absolute and are not relative to any particular heading
+ * these are maze things
+"""
+DIR_NORTH = 0
+DIR_EAST = 1
+DIR_SOUTH = 2
+DIR_WEST = 3
+DIR_COUNT = 4
+DIR_BLOCKED = -1
 
 
 class Maze:
 
     def __init__(self, size=16):
         self.size = size
-        self.cost = [MAX_COST for _ in range(self.size * self.size)]
+        self.cost = [None for _ in range(self.size * self.size)]
         self.walls = [ALL_UNKNOWN for _ in range(self.size * self.size)]
         self.mask = OPEN_MAZE_MASK
 
@@ -237,7 +267,7 @@ class Maze:
         SOUTH_MASK = MASK << DIR_SOUTH * 2
         WEST_MASK = MASK << DIR_WEST * 2
 
-        self.cost = [MAX_COST for _ in range(self.size * self.size)]
+        self.cost = [None for _ in range(self.size * self.size)]
         self.cost[target_cell] = 0
         head = 0
         tail = 0
@@ -251,28 +281,28 @@ class Maze:
 
             if walls_here & NORTH_MASK == 0:
                 neighbour = here + 1
-                if self.cost[neighbour] == MAX_COST:
+                if self.cost[neighbour] == None:
                     self.cost[neighbour] = self.cost[here] + 1
                     queue[tail] = neighbour
                     tail += 1
 
             if walls_here & EAST_MASK == 0:
                 neighbour = here + 16
-                if self.cost[neighbour] == MAX_COST:
+                if self.cost[neighbour] == None:
                     self.cost[neighbour] = self.cost[here] + 1
                     queue[tail] = neighbour
                     tail += 1
 
             if walls_here & SOUTH_MASK == 0:
                 neighbour = here - 1
-                if self.cost[neighbour] == MAX_COST:
+                if self.cost[neighbour] == None:
                     self.cost[neighbour] = self.cost[here] + 1
                     queue[tail] = neighbour
                     tail += 1
 
             if walls_here & WEST_MASK == 0:
                 neighbour = here - 16
-                if self.cost[neighbour] == MAX_COST:
+                if self.cost[neighbour] == None:
                     self.cost[neighbour] = self.cost[here] + 1
                     queue[tail] = neighbour
                     tail += 1
@@ -352,7 +382,7 @@ if __name__ == "__main__":
     print("Flood distance correct: ", maze.cost[0] == 20)
     print(f"{sys.implementation.name} - maze: Execution Time for {iterations()} iterations: {t:} milliseconds")
 
-    maze.init_walls_from_string(all_japan_2007)
-    maze.flood(target)
-    maze_str = maze.get_maze_str(VIEW_COSTS, OPEN_MAZE_MASK)
-    print(maze)
+    # maze.init_walls_from_string(all_japan_2007)
+    # maze.flood(target)
+    # maze_str = maze.get_maze_str(VIEW_COSTS, OPEN_MAZE_MASK)
+    # print(maze)
