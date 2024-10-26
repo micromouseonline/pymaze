@@ -355,4 +355,4 @@ if __name__ == "__main__":
     maze.init_walls_from_string(all_japan_2007)
     maze.flood(target)
     maze_str = maze.get_maze_str(VIEW_COSTS, OPEN_MAZE_MASK)
-    print(maze_str)
+    print(maze)
