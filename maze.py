@@ -19,6 +19,8 @@ class Maze:
     def __str__(self) -> str:
         return self.get_maze_str(VIEW_PLAIN)
 
+    # TODO: add a __repr__ method that will prodiuce a Python declaration?
+
     def cell_id(self, x, y):
         return y + x * self.size
 
