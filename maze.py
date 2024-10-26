@@ -45,6 +45,7 @@ class Maze:
         self.cost = [None for _ in range(self.size * self.size)]
         self.walls = [ALL_UNKNOWN for _ in range(self.size * self.size)]
         self.mask = OPEN_MAZE_MASK
+        self.goal_cell = self.cell_id(7, 7)
 
     def __str__(self) -> str:
         return self.get_maze_str(VIEW_PLAIN)
@@ -56,6 +57,12 @@ class Maze:
 
     def cell_xy(self, cell):
         return (cell // self.size, cell % self.size)
+
+    def goal(self):
+        return self.goal_cell
+
+    def set_goal(self, x, y):
+        self.goal_cell = self.cell_id(x, y)
 
     def init_walls(self):
         """
