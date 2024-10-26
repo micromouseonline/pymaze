@@ -38,6 +38,48 @@ class Maze:
         maze.set_wall(0, DIR_EAST, WALL_PRESENT)
         maze.set_wall(0, DIR_NORTH, WALL_ABSENT)
 
+    def init_walls_from_string(self, lines):
+        self.size = max(len(lines) // 2, len(lines[0]) // 4)
+        self.walls = [ALL_UNKNOWN for _ in range(self.size * self.size)]
+        cell_y = 15
+        for i, line in enumerate(lines):
+            if i >= 2 * self.size:
+                continue
+            line = line.rstrip()  # remove \n
+            if i % 2 == 0:  # +---+---+---+---+
+                # look at every 4th character, starting at the third character
+                for cell_x, c in enumerate(line[2::4]):
+                    wall_state = WALL_ABSENT
+                    if c == '-':
+                        wall_state = WALL_PRESENT
+                    self.update_wall(self.cell_id(cell_x, cell_y),
+                                     DIR_NORTH, wall_state)
+            else:  # |   |   | G |   |
+                # look at every 4th character, starting at the first character
+                wall_chars = line[0::4][:-1]
+                for x, c in enumerate(wall_chars):
+                    wall_state = WALL_ABSENT
+                    if c == '|':
+                        wall_state = WALL_PRESENT
+                    self.update_wall(self.cell_id(x, cell_y),
+                                     DIR_WEST, wall_state)
+                # special case for the last character
+                wall_state = WALL_ABSENT
+                if line[-1] == '|':
+                    wall_state = WALL_PRESENT
+                self.update_wall(self.cell_id(self.size - 1, cell_y),
+                                 DIR_EAST, wall_state)
+            cell_y -= i % 2
+        # special case for the bottom
+        cell_y = 0
+        for cell_x, c in enumerate(line[2::4]):
+            wall_state = WALL_ABSENT
+            if c == '-':
+                wall_state = WALL_PRESENT
+            self.set_wall(self.cell_id(cell_x, cell_y),
+                          DIR_SOUTH, wall_state)
+        return
+
     def set_wall(self, cell, direction, state):
         """
         Unconditionally set the state of a single wall in the maze
@@ -311,3 +353,8 @@ if __name__ == "__main__":
     print(maze_str)
     print("Flood distance correct: ", maze.cost[0] == 20)
     print(f"{sys.implementation.name} - maze: Execution Time for {iterations()} iterations: {t:} milliseconds")
+
+    maze.init_walls_from_string(all_japan_2007)
+    maze.flood(target)
+    maze_str = maze.get_maze_str(VIEW_COSTS, OPEN_MAZE_MASK)
+    print(maze_str)
