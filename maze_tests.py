@@ -2,60 +2,228 @@
  Here can go tests for the maze implementations
 """
 import sys
-
+import unittest
 import time
 from maze_support import *
 from maze import *
+from maze_files import *
+
+
+def millis():
+    """
+    A relatitvely platform independent version of time.ticks_ms()
+    """
+    if sys.implementation.name == 'micropython':
+        # MicroPython
+        return time.ticks_ms()
+    else:
+        # Desktop Python
+        return int(round(time.time() * 1000))
 
 
 def iterations():
+    """
+    Since the pico is much slower than a PC, it makes sense that any
+    timing/performance tests are run a different number of times on each.
+    """
     if sys.implementation.name == 'micropython':
         return 100
     else:
         return 10000
 
 
-def test_wall_states():
-    # check the wall storage method
-    walls = maze.walls[maze.cell_id(0, 0)]
-    print(f'{walls:08b}')
-    print(maze.cell_has_exit(maze.cell_id(0, 0), DIR_NORTH))
-    print(maze.cell_has_exit(maze.cell_id(0, 0), DIR_EAST))
-    print(maze.cell_has_exit(maze.cell_id(0, 0), DIR_SOUTH))
-    print(maze.cell_has_exit(maze.cell_id(0, 0), DIR_WEST))
+class TestTiming(unittest.TestCase):
 
-    maze.set_wall(maze.cell_id(2, 2), DIR_NORTH, WALL_ABSENT)
-    maze.set_wall(maze.cell_id(3, 2), DIR_NORTH, WALL_PRESENT)
-    maze.set_wall(maze.cell_id(4, 2), DIR_NORTH, WALL_UNKNOWN)
-    maze.set_wall(maze.cell_id(5, 2), DIR_NORTH, WALL_VIRTUAL)
+    def test_millis(self):
+        t = millis()
+        time.sleep(1.0)
+        t = millis() - t
+        self.assertTrue(abs(t - 1000) <= 1, "Should be 1000")
 
-    walls = maze.walls[maze.cell_id(2, 2)]
-    print(f'{walls:08b}')
-    walls = maze.walls[maze.cell_id(3, 2)]
-    print(f'{walls:08b}')
-    walls = maze.walls[maze.cell_id(4, 2)]
-    print(f'{walls:08b}')
-    walls = maze.walls[maze.cell_id(5, 2)]
-    print(f'{walls:08b}')
 
-    maze.set_mask(CLOSED_MAZE_MASK)
-    print("CLOSED VIEW")
-    print(f'{maze.mask:08b}')
-    print(maze.cell_has_exit(maze.cell_id(2, 2), DIR_NORTH))
-    print(maze.cell_has_exit(maze.cell_id(3, 2), DIR_NORTH))
-    print(maze.cell_has_exit(maze.cell_id(4, 2), DIR_NORTH))
-    print(maze.cell_has_exit(maze.cell_id(5, 2), DIR_NORTH))
-    maze.set_mask(OPEN_MAZE_MASK)
-    print("OPEN VIEW")
-    print(f'{maze.mask:08b}')
-    print(maze.cell_has_exit(maze.cell_id(2, 2), DIR_NORTH))
-    print(maze.cell_has_exit(maze.cell_id(3, 2), DIR_NORTH))
-    print(maze.cell_has_exit(maze.cell_id(4, 2), DIR_NORTH))
-    print(maze.cell_has_exit(maze.cell_id(5, 2), DIR_NORTH))
+class TestMazeCellID(unittest.TestCase):
+
+    def test_maze_cell_id(self):
+        maze = Maze()
+        self.assertEqual(maze.cell_id(0, 0), 0)
+        self.assertEqual(maze.cell_id(0, 1), 1)
+        self.assertEqual(maze.cell_id(1, 0), 16)
+        self.assertEqual(maze.cell_id(1, 1), 17)
+
+    def test_maze_cell_xy(self):
+        maze = Maze()
+        x, y = maze.cell_xy(18)
+        self.assertEqual(x, 1)
+        self.assertEqual(y, 2)
+
+
+class TestMazeCellNeighbour(unittest.TestCase):
+
+    def test_maze_cell_neighbour(self):
+        maze = Maze()
+        self.assertEqual(maze.neighbour(17, DIR_NORTH), 17 + 1)
+        self.assertEqual(maze.neighbour(17, DIR_EAST),  17 + 16)
+        self.assertEqual(maze.neighbour(17, DIR_SOUTH), 17 - 1)
+        self.assertEqual(maze.neighbour(17, DIR_WEST),  17 - 16)
+
+
+class TestMazeWalls(unittest.TestCase):
+
+    def test_default_size_is_16(self):
+        maze = Maze()
+        self.assertEqual(maze.size, 16)
+
+    def test_maze_default_walls(self):
+        maze = Maze()
+        for cell in maze.walls:
+            self.assertEqual(cell, ALL_UNKNOWN)
+
+    def test_maze_default_cost(self):
+        maze = Maze()
+        self.assertEqual(maze.cost[0], None)
+
+    def test_maze_mask_setting(self):
+        maze = Maze()
+        self.assertEqual(maze.mask, OPEN_MAZE_MASK)
+        maze.set_mask(CLOSED_MAZE_MASK)
+        self.assertEqual(maze.mask, CLOSED_MAZE_MASK)
+        maze.set_mask(OPEN_MAZE_MASK)
+        self.assertEqual(maze.mask, OPEN_MAZE_MASK)
+
+    def test_maze_set_wall(self):
+        maze = Maze()
+        cell = maze.cell_id(0, 0)
+        neighbour_north = maze.cell_id(0, 1)
+        self.assertTrue(maze.cell_has_exit(cell, DIR_NORTH))
+        self.assertTrue(maze.cell_has_exit(neighbour_north, DIR_SOUTH))
+        maze.set_wall(cell, DIR_NORTH, WALL_PRESENT)
+        self.assertFalse(maze.cell_has_exit(cell, DIR_NORTH))
+        self.assertFalse(maze.cell_has_exit(neighbour_north, DIR_SOUTH))
+
+    def test_maze_mask_use(self):
+        maze = Maze()
+        cell = maze.cell_id(4, 4)
+        # wall defaults to WALL_UNKNOWN - OPEN is exit, CLOSED it not
+        maze.set_mask(OPEN_MAZE_MASK)
+        self.assertTrue(maze.cell_has_exit(cell, DIR_NORTH))
+        maze.set_mask(CLOSED_MAZE_MASK)
+        self.assertFalse(maze.cell_has_exit(cell, DIR_NORTH))
+
+        # wall set to WALL_PRESENT - never an exit
+        maze.set_wall(cell, DIR_NORTH, WALL_PRESENT)
+        maze.set_mask(OPEN_MAZE_MASK)
+        self.assertFalse(maze.cell_has_exit(cell, DIR_NORTH))
+        maze.set_mask(CLOSED_MAZE_MASK)
+        self.assertFalse(maze.cell_has_exit(cell, DIR_NORTH))
+
+        # wall set to WALL_ABSENT - always an exit
+        maze.set_wall(cell, DIR_NORTH, WALL_ABSENT)
+        maze.set_mask(OPEN_MAZE_MASK)
+        self.assertTrue(maze.cell_has_exit(cell, DIR_NORTH))
+        maze.set_mask(CLOSED_MAZE_MASK)
+        self.assertTrue(maze.cell_has_exit(cell, DIR_NORTH))
+
+        # wall set to WALL_VIRTUAL - never an exit
+        maze.set_wall(cell, DIR_NORTH, WALL_VIRTUAL)
+        maze.set_mask(OPEN_MAZE_MASK)
+        self.assertFalse(maze.cell_has_exit(cell, DIR_NORTH))
+        maze.set_mask(CLOSED_MAZE_MASK)
+        self.assertFalse(maze.cell_has_exit(cell, DIR_NORTH))
+
+    def test_maze_init_walls(self):
+        maze = Maze()
+        maze.init_walls()
+        cell = maze.cell_id(0, 0)
+        self.assertTrue(maze.cell_has_exit(cell, DIR_NORTH))
+        self.assertFalse(maze.cell_has_exit(cell, DIR_EAST))
+        self.assertFalse(maze.cell_has_exit(cell, DIR_SOUTH))
+        self.assertFalse(maze.cell_has_exit(cell, DIR_WEST))
+
+    def test_maze_updates_only_once(self):
+        maze = Maze()
+        maze.init_walls()
+        cell = maze.cell_id(8, 8)
+        self.assertTrue(maze.cell_has_exit(cell, DIR_SOUTH))
+        maze.update_wall(cell, DIR_SOUTH, WALL_PRESENT)
+        self.assertFalse(maze.cell_has_exit(cell, DIR_SOUTH))
+        maze.update_wall(cell, DIR_SOUTH, WALL_ABSENT)
+        self.assertFalse(maze.cell_has_exit(cell, DIR_SOUTH))
+
+
+class TestMazeGoal(unittest.TestCase):
+    def test_maze_goal_default(self):
+        maze = Maze()
+        self.assertEqual(maze.goal(), maze.cell_id(7, 7))
+
+    def test_maze_set_goal(self):
+        maze = Maze()
+        maze.set_goal(8, 8)
+        self.assertEqual(maze.goal(), maze.cell_id(8, 8))
+
+
+class TestMazeFlood(unittest.TestCase):
+
+    def test_maze_flood_empty_maze_open(self):
+        maze = Maze()
+        maze.set_mask(OPEN_MAZE_MASK)
+        maze.init_walls()
+        target = maze.goal()
+        start = maze.cell_id(0, 0)
+        maze.flood(target)
+        self.assertEqual(maze.cost[start], 14)
+
+    def test_maze_flood_empty_maze_closed(self):
+        maze = Maze()
+        maze.set_mask(CLOSED_MAZE_MASK)
+        maze.init_walls()
+        target = maze.goal()
+        start = maze.cell_id(0, 0)
+        maze.flood(target)
+        self.assertEqual(maze.cost[start], None)
+
+    def test_maze_flood_empty_maze_reverse(self):
+        maze = Maze()
+        maze.set_mask(OPEN_MAZE_MASK)
+        maze.init_walls()
+        target = maze.goal()
+        start = maze.cell_id(0, 0)
+        maze.flood(start)
+        self.assertEqual(maze.cost[target], 14)
+        top_right = maze.cell_id(maze.size-1, maze.size-1)
+        self.assertEqual(maze.cost[top_right], 30)
+
+
+class TestMazeSolution(unittest.TestCase):
+    def test_maze_has_no_solution_after_init(self):
+        maze = Maze()
+        maze.init_walls()
+        self.assertFalse(maze.has_solution())
+
+    def test_maze_has_solution_after_explore(self):
+        maze = Maze()
+        maze.init_walls_from_string(all_japan_2007)
+        self.assertTrue(maze.has_solution())
+
+
+class TestMazeLoad(unittest.TestCase):
+
+    def test_maze_load(self):
+        maze = Maze()
+        maze.init_walls_from_string(all_japan_2007)
+        goal_cell = maze.goal()
+        start_cell = maze.cell_id(0, 0)
+        self.assertTrue(maze.cell_has_exit(goal_cell, DIR_NORTH))
+        self.assertTrue(maze.cell_has_exit(goal_cell, DIR_EAST))
+        self.assertFalse(maze.cell_has_exit(goal_cell, DIR_SOUTH))
+        self.assertFalse(maze.cell_has_exit(goal_cell, DIR_WEST))
+        maze.flood(goal_cell)
+        self.assertEqual(maze.cost[goal_cell], 0)
+        self.assertEqual(maze.cost[start_cell], 72)
+        maze.set_mask(CLOSED_MAZE_MASK)
+        self.assertEqual(maze.cost[start_cell], 72)
 
 
 if __name__ == "__main__":
-    maze = Maze()
     print("This system is running {}".format(sys.implementation.name))
     print("start...")
-    test_wall_states()
+    unittest.main()
