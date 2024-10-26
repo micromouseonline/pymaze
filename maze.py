@@ -16,6 +16,9 @@ class Maze:
         self.walls = [ALL_UNKNOWN for _ in range(self.size * self.size)]
         self.mask = OPEN_MAZE_MASK
 
+    def __str__(self) -> str:
+        return self.get_maze_str(VIEW_PLAIN)
+
     def cell_id(self, x, y):
         return y + x * self.size
 
