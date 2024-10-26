@@ -213,12 +213,12 @@ class Maze:
         self.mask = mask
         str = ""
         for y in range(self.size - 1, -1, -1):
-            line = "+"
+            line = "o"
             for x in range(self.size):
                 if self.cell_has_exit(self.cell_id(x, y), DIR_NORTH):
-                    line += "   +"
+                    line += "   o"
                 else:
-                    line += "---+"
+                    line += "---o"
             str += line + "\n"
             line = ""
             for x in range(self.size):
@@ -242,9 +242,9 @@ class Maze:
         line = "+"
         for x in range(self.size):
             if self.cell_has_exit(self.cell_id(x, 0), DIR_SOUTH):
-                line += "   +"
+                line += "   o"
             else:
-                line += "---+"
+                line += "---o"
         # print(line)
         str += line + "\n"
         self.mask = old_mask
