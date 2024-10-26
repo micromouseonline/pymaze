@@ -22,7 +22,7 @@ class Maze:
     def cell_xy(self, cell):
         return (cell // self.size, cell % self.size)
 
-    def clear_walls(self):
+    def init_walls(self):
         self.walls = [ALL_UNKNOWN for _ in range(self.size * self.size)]
         for cell in range(16):
             maze.set_wall(self.cell_id(cell, 0), DIR_SOUTH, WALL_PRESENT)
@@ -232,7 +232,7 @@ if __name__ == "__main__":
     # Example usage
     maze = Maze()
 
-    maze.clear_walls()
+    maze.init_walls()
     maze.update_wall(maze.cell_id(7, 7), DIR_WEST, WALL_PRESENT)
     maze.update_wall(maze.cell_id(7, 7), DIR_SOUTH, WALL_PRESENT)
     maze.update_wall(maze.cell_id(8, 7), DIR_SOUTH, WALL_PRESENT)
