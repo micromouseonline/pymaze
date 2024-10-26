@@ -23,6 +23,12 @@ class Maze:
         return (cell // self.size, cell % self.size)
 
     def init_walls(self):
+        """
+        Initialise the maze walls to all unknown
+        Set the borders as walls
+        Mark the start cell walls
+        Does not set the goal area
+        """
         self.walls = [ALL_UNKNOWN for _ in range(self.size * self.size)]
         for cell in range(16):
             maze.set_wall(self.cell_id(cell, 0), DIR_SOUTH, WALL_PRESENT)
@@ -63,7 +69,7 @@ class Maze:
     def update_wall(self, cell, direction, state):
         """
         Use this to update the maze while exploring. 
-        It will ensure that wal state can only be changed once.
+        It will ensure that wall state can only be changed once.
         If you absolutely, positively have to set the wall state, use set_wall.
         """
         this_wall = (self.walls[cell] >> direction * 2) & WALL_MASK
@@ -72,27 +78,61 @@ class Maze:
         self.set_wall(cell, direction, state)
 
     def set_mask(self, mask):
+        """
+        The mask determines the view of the maze
+        The default is OPEN_MAZE_MASK which assumes unknown walls are absent
+        The CLOSED_MAZE_MASK assumes unknown walls are present
+
+        By using these two masks, you can view the maze as 'open' or 'closed'
+        Flood using the 'open' view while exploring to find a way to the goal
+        Flood using the 'closed' view to find a guaranteed safe route to the goal
+        """
         self.mask = mask
 
     def cell_has_wall(self, cell, direction):
+        """
+        Returns True if there is a wall in the given cell and direction
+        Uses the current mask to to view the maze as 'closed' or 'open'
+        The 'closed' maze assumes unknown walls are present
+        The 'open' maze assumes unknown walls are absent
+        TODO: This method may be redundant
+        """
         wall = self.walls[cell] >> direction * 2
         return wall & self.mask == WALL_PRESENT
 
     def cell_has_exit(self, cell, direction):
+        """
+        Returns True if there is an exit in the given cell and direction
+        Uses the current mask to to view the maze as 'closed' or 'open'
+        The 'closed' maze assumes unknown walls are present
+        The 'open' maze assumes unknown walls are absent
+        """
         wall = self.walls[cell] >> direction * 2
         return wall & self.mask == WALL_ABSENT
 
     def neighbour(self, cell, direction):
+        """
+        Calculate and return the offset of a neighbouring cell.
+        The maze is assumed to be square and the returned value will
+        wrap around the edges of the maze
+        There is no error checking for the direction
+        """
+        neighbour = cell
         if direction == DIR_NORTH:
-            return cell + 1
+            neighbour = cell + 1
         elif direction == DIR_EAST:
-            return cell + self.size
+            neighbour = cell + self.size
         elif direction == DIR_SOUTH:
-            return cell - 1
+            neighbour = cell + self.size*self.size - 1
         elif direction == DIR_WEST:
-            return cell - self.size
+            neighbour = cell + self.size * self.size - self.size
+        return neighbour % (self.size * self.size)
 
     def print_maze(self, view=VIEW_PLAIN, mask=OPEN_MAZE_MASK):
+        """
+        Print a visual representation of the maze
+        If view == VIEW_COSTS, print the cost of each cell
+        """
         old_mask = self.mask
         self.mask = mask
         for y in range(self.size - 1, -1, -1):
@@ -137,8 +177,13 @@ class Maze:
         The 'closed' view should be used to find the shortest path.
 
         For better performance, the flood method makes use of the intimate knowledge it has
-        about the maze. This is not ideal in terms of maintentance but speed is king.
+        about the maze. 
 
+        For example, calculating the neighbor does not use the built-in method because it
+        is expensive and too general purpose. Instead, a short, inline version is used which
+        relies ion the maze edges having known walls.
+
+        This is not ideal in terms of maintenance but speed is king.
         """
         MASK = WALL_MASK & self.mask
         NORTH_MASK = MASK << DIR_NORTH * 2
