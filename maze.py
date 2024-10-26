@@ -128,13 +128,14 @@ class Maze:
             neighbour = cell + self.size * self.size - self.size
         return neighbour % (self.size * self.size)
 
-    def print_maze(self, view=VIEW_PLAIN, mask=OPEN_MAZE_MASK):
+    def get_maze_str(self, view=VIEW_PLAIN, mask=OPEN_MAZE_MASK):
         """
         Print a visual representation of the maze
         If view == VIEW_COSTS, print the cost of each cell
         """
         old_mask = self.mask
         self.mask = mask
+        str = ""
         for y in range(self.size - 1, -1, -1):
             line = "+"
             for x in range(self.size):
@@ -142,7 +143,7 @@ class Maze:
                     line += "   +"
                 else:
                     line += "---+"
-            print(line)
+            str += line + "\n"
             line = ""
             for x in range(self.size):
                 cell = self.cell_id(x, y)
@@ -150,7 +151,10 @@ class Maze:
                     line += " "
                 else:
                     line += "|"
-                if view == VIEW_COSTS and self.cost[cell] is not None:
+                # now the cell space
+                if cell == 0 and view == VIEW_PLAIN:
+                    line += " S "
+                elif view == VIEW_COSTS and self.cost[cell] is not None:
                     line += f"{self.cost[cell]:>3}"
                 else:
                     line += "   "
@@ -158,15 +162,17 @@ class Maze:
                 line += " "
             else:
                 line += "|"  # Rightmost boundary
-            print(line)
+            str += line + "\n"
         line = "+"
         for x in range(self.size):
             if self.cell_has_exit(self.cell_id(x, 0), DIR_SOUTH):
                 line += "   +"
             else:
                 line += "---+"
-        print(line)
+        # print(line)
+        str += line + "\n"
         self.mask = old_mask
+        return str
 
     def flood(self, target_cell):
         """
@@ -292,7 +298,7 @@ if __name__ == "__main__":
     maze.update_wall(maze.cell_id(4, 4), DIR_SOUTH, WALL_PRESENT)
     maze.update_wall(maze.cell_id(4, 4), DIR_WEST, WALL_PRESENT)
 
-    maze.print_maze()
+    maze.get_maze_str()
 
     # exit()
     start_time = millis()
@@ -301,6 +307,7 @@ if __name__ == "__main__":
         distances = maze.flood(target)
     end_time = millis()
     t = end_time - start_time
-    maze.print_maze(VIEW_COSTS, OPEN_MAZE_MASK)
+    maze_str = maze.get_maze_str(VIEW_COSTS, OPEN_MAZE_MASK)
+    print(maze_str)
     print("Flood distance correct: ", maze.cost[0] == 20)
     print(f"{sys.implementation.name} - maze: Execution Time for {iterations()} iterations: {t:} milliseconds")
