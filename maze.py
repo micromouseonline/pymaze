@@ -13,7 +13,7 @@ class Maze:
     def __init__(self, size=16):
         self.size = size
         self.cost = [MAX_COST for _ in range(self.size * self.size)]
-        self.walls = {ALL_UNKNOWN for _ in range(self.size * self.size)}
+        self.walls = [ALL_UNKNOWN for _ in range(self.size * self.size)]
         self.mask = OPEN_MAZE_MASK
 
     def cell_id(self, x, y):
