@@ -138,33 +138,33 @@ class Maze:
         for y in range(self.size - 1, -1, -1):
             line = "+"
             for x in range(self.size):
-                if self.cell_has_wall(self.cell_id(x, y), DIR_NORTH) == WALL_PRESENT:
-                    line += "---+"
-                else:
+                if self.cell_has_exit(self.cell_id(x, y), DIR_NORTH):
                     line += "   +"
+                else:
+                    line += "---+"
             print(line)
             line = ""
             for x in range(self.size):
                 cell = self.cell_id(x, y)
-                if self.cell_has_wall(cell, DIR_WEST) == WALL_PRESENT:
-                    line += "|"
-                else:
+                if self.cell_has_exit(cell, DIR_WEST):
                     line += " "
+                else:
+                    line += "|"
                 if view == VIEW_COSTS and self.cost[cell] is not None:
                     line += f"{self.cost[cell]:>3}"
                 else:
                     line += "   "
-            if self.cell_has_wall(self.cell_id(self.size-1, y), DIR_EAST) == WALL_PRESENT:
-                line += "|"  # Rightmost boundary
-            else:
+            if self.cell_has_exit(self.cell_id(self.size-1, y), DIR_EAST):
                 line += " "
+            else:
+                line += "|"  # Rightmost boundary
             print(line)
         line = "+"
         for x in range(self.size):
-            if self.cell_has_wall(self.cell_id(x, 0), DIR_SOUTH) == WALL_PRESENT:
-                line += "---+"
-            else:
+            if self.cell_has_exit(self.cell_id(x, 0), DIR_SOUTH):
                 line += "   +"
+            else:
+                line += "---+"
         print(line)
         self.mask = old_mask
 
@@ -302,6 +302,5 @@ if __name__ == "__main__":
     end_time = millis()
     t = end_time - start_time
     maze.print_maze(VIEW_COSTS, OPEN_MAZE_MASK)
-    maze.print_maze(VIEW_COSTS, CLOSED_MAZE_MASK)
     print("Flood distance correct: ", maze.cost[0] == 20)
     print(f"{sys.implementation.name} - maze: Execution Time for {iterations()} iterations: {t:} milliseconds")
