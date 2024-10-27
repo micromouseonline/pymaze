@@ -198,6 +198,28 @@ class TestMazeFlood(unittest.TestCase):
         top_right = maze.cell_id(maze.size-1, maze.size-1)
         self.assertEqual(maze.cost[top_right], 30)
 
+class TestDirectionToSmallest(unittest.TestCase):
+
+    def test_direction_to_smallest(self):
+        maze = Maze()
+        maze.init_walls()
+        maze.set_mask(OPEN_MAZE_MASK)
+        maze.flood(maze.goal())
+        cell = maze.cell_id(1,1)
+        s = maze.get_maze_str(VIEW_COSTS)
+        print(s)
+
+        self.assertEqual(maze.direction_to_smallest(cell,DIR_NORTH), DIR_NORTH)
+        self.assertEqual(maze.direction_to_smallest(cell,DIR_EAST), DIR_EAST)
+        self.assertEqual(maze.direction_to_smallest(cell,DIR_SOUTH), DIR_EAST)
+        self.assertEqual(maze.direction_to_smallest(cell,DIR_WEST), DIR_NORTH)
+        
+        cell = maze.cell_id(0,0)
+        self.assertEqual(maze.direction_to_smallest(cell,DIR_NORTH), DIR_NORTH)
+        self.assertEqual(maze.direction_to_smallest(cell,DIR_EAST), DIR_NORTH)
+        self.assertEqual(maze.direction_to_smallest(cell,DIR_SOUTH), DIR_NORTH)
+        self.assertEqual(maze.direction_to_smallest(cell,DIR_WEST), DIR_NORTH)
+
 
 class TestMazeSolution(unittest.TestCase):
     def test_maze_has_no_solution_after_init(self):

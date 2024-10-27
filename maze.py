@@ -210,6 +210,40 @@ class Maze:
         elif direction == DIR_WEST:
             neighbour = cell + self.size * self.size - self.size
         return neighbour % (self.size * self.size)
+    
+    def direction_to_smallest(self, cell, start_direction = DIR_NORTH):
+        """
+        Return the direction of the smallest neighbouring cell.
+        Testing is done in the order ahead, left, right, back.
+        Provide a start direction if desired 
+        """
+        dir = start_direction
+        cost = 1000 #self.cost[cell]
+        if self.cell_has_exit(cell, dir):
+            ahead_cost = self.cost[self.neighbour(cell,dir)]
+            if ahead_cost < cost:
+                cost = ahead_cost
+        left_dir = left_from(dir)
+        if self.cell_has_exit(cell, left_dir):
+            left_cost = self.cost[self.neighbour(cell,left_dir)]
+            if left_cost < cost:
+                dir = left_dir
+                cost = left_cost
+        right_dir = right_from(dir)
+        if self.cell_has_exit(cell, right_dir):
+            right_cost = self.cost[self.neighbour(cell,right_dir)]
+            if right_cost < cost:
+                dir = right_dir
+                cost = right_cost
+        back_dir = behind_from(dir)
+        if self.cell_has_exit(cell, back_dir):
+            back_cost = self.cost[self.neighbour(cell,back_dir)]
+            if back_cost < cost:
+                dir = back_dir
+                cost = back_cost
+
+        return dir
+                              
 
     def get_maze_str(self, view=VIEW_PLAIN, mask=OPEN_MAZE_MASK):
         """
