@@ -159,12 +159,12 @@ class TestMazeWalls(unittest.TestCase):
 class TestMazeGoal(unittest.TestCase):
     def test_maze_goal_default(self):
         maze = Maze()
-        self.assertEqual(maze.goal(), maze.cell_id(7, 7))
+        self.assertEqual(maze.get_goal(), maze.cell_id(7, 7))
 
     def test_maze_set_goal(self):
         maze = Maze()
-        maze.set_goal(8, 8)
-        self.assertEqual(maze.goal(), maze.cell_id(8, 8))
+        maze.set_goal(maze.cell_id(8, 8))
+        self.assertEqual(maze.get_goal(), maze.cell_id(8, 8))
 
 
 class TestMazeFlood(unittest.TestCase):
@@ -173,7 +173,7 @@ class TestMazeFlood(unittest.TestCase):
         maze = Maze()
         maze.set_mask(OPEN_MAZE_MASK)
         maze.init_walls()
-        target = maze.goal()
+        target = maze.get_goal()
         start = maze.cell_id(0, 0)
         maze.flood(target)
         self.assertEqual(maze.cost[start], 14)
@@ -182,7 +182,7 @@ class TestMazeFlood(unittest.TestCase):
         maze = Maze()
         maze.set_mask(CLOSED_MAZE_MASK)
         maze.init_walls()
-        target = maze.goal()
+        target = maze.get_goal()
         start = maze.cell_id(0, 0)
         maze.flood(target)
         self.assertEqual(maze.cost[start], None)
@@ -191,7 +191,7 @@ class TestMazeFlood(unittest.TestCase):
         maze = Maze()
         maze.set_mask(OPEN_MAZE_MASK)
         maze.init_walls()
-        target = maze.goal()
+        target = maze.get_goal()
         start = maze.cell_id(0, 0)
         maze.flood(start)
         self.assertEqual(maze.cost[target], 14)
@@ -204,7 +204,7 @@ class TestDirectionToSmallest(unittest.TestCase):
         maze = Maze()
         maze.init_walls()
         maze.set_mask(OPEN_MAZE_MASK)
-        maze.flood(maze.goal())
+        maze.flood(maze.get_goal())
         cell = maze.cell_id(1,1)
 
         self.assertEqual(maze.direction_to_smallest(cell,DIR_NORTH), DIR_NORTH)
@@ -236,7 +236,7 @@ class TestMazeLoad(unittest.TestCase):
     def test_maze_load(self):
         maze = Maze()
         maze.init_walls_from_string(all_japan_2007)
-        goal_cell = maze.goal()
+        goal_cell = maze.get_goal()
         start_cell = maze.cell_id(0, 0)
         self.assertTrue(maze.cell_has_exit(goal_cell, DIR_NORTH))
         self.assertTrue(maze.cell_has_exit(goal_cell, DIR_EAST))
