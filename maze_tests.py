@@ -206,8 +206,6 @@ class TestDirectionToSmallest(unittest.TestCase):
         maze.set_mask(OPEN_MAZE_MASK)
         maze.flood(maze.goal())
         cell = maze.cell_id(1,1)
-        s = maze.get_maze_str(VIEW_COSTS)
-        print(s)
 
         self.assertEqual(maze.direction_to_smallest(cell,DIR_NORTH), DIR_NORTH)
         self.assertEqual(maze.direction_to_smallest(cell,DIR_EAST), DIR_EAST)
