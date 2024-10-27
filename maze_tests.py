@@ -2,6 +2,12 @@
  Here can go tests for the maze implementations
 """
 import sys
+
+if sys.implementation.name == 'micropython':
+    print("Unit tests not currently supported on MicroPython")
+    sys.exit()
+
+
 import unittest
 import time
 from maze_support import *
