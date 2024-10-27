@@ -8,9 +8,20 @@ from maze_files import *
 import os
 import sys
 
+#################################################################################
+# this bit of stuff lets us use the performance-enhancing features of MicroPython
+# if they are available.
+# It is Python magic and you do not have to understand it to use it
+try:
+    import micropython
+except ImportError:
+    # Define a mock 'micropython' module with a no-op 'native' decorator
+    import types
+    micropython = types.SimpleNamespace(native=lambda f: f)
+################################################################################
 
-# TODO:
-# cell_is_visited
+
+
 WALL_ABSENT = 0
 WALL_PRESENT = 1
 WALL_UNKNOWN = 2
@@ -299,6 +310,7 @@ class Maze:
 
 
 
+    @micropython.native
     def flood(self, target_cell):
         """
         While exploring, the 'open' view should be used to find exits. This is  
