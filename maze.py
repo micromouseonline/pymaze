@@ -350,32 +350,33 @@ class Maze:
             here = queue[head]
             head += 1
             walls_here = self.walls[here]
+            next_cost = self.cost[here] + 1
 
             if walls_here & NORTH_MASK == 0:
                 neighbour = here + 1
                 if self.cost[neighbour] == None:
-                    self.cost[neighbour] = self.cost[here] + 1
+                    self.cost[neighbour] = next_cost
                     queue[tail] = neighbour
                     tail += 1
 
             if walls_here & EAST_MASK == 0:
                 neighbour = here + self.size
                 if self.cost[neighbour] == None:
-                    self.cost[neighbour] = self.cost[here] + 1
+                    self.cost[neighbour] = next_cost
                     queue[tail] = neighbour
                     tail += 1
 
             if walls_here & SOUTH_MASK == 0:
                 neighbour = here - 1
                 if self.cost[neighbour] == None:
-                    self.cost[neighbour] = self.cost[here] + 1
+                    self.cost[neighbour] = next_cost
                     queue[tail] = neighbour
                     tail += 1
 
             if walls_here & WEST_MASK == 0:
                 neighbour = here - self.size
                 if self.cost[neighbour] == None:
-                    self.cost[neighbour] = self.cost[here] + 1
+                    self.cost[neighbour] = next_cost
                     queue[tail] = neighbour
                     tail += 1
 
