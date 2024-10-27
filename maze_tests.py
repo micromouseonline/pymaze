@@ -155,6 +155,14 @@ class TestMazeWalls(unittest.TestCase):
         maze.update_wall(cell, DIR_SOUTH, WALL_ABSENT)
         self.assertFalse(maze.cell_has_exit(cell, DIR_SOUTH))
 
+class TestMazeCellVisited(unittest.TestCase):
+    def test_maze_cell_is_visited(self):
+        maze = Maze()
+        self.assertFalse(maze.cell_is_visited(0))
+        maze.init_walls()
+        self.assertTrue(maze.cell_is_visited(0))
+        self.assertFalse(maze.cell_is_visited(1))
+    
 
 class TestMazeGoal(unittest.TestCase):
     def test_maze_goal_default(self):

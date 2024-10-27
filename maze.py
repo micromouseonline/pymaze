@@ -9,6 +9,8 @@ import os
 import sys
 
 
+# TODO:
+# cell_is_visited
 WALL_ABSENT = 0
 WALL_PRESENT = 1
 WALL_UNKNOWN = 2
@@ -58,11 +60,11 @@ class Maze:
     def cell_xy(self, cell):
         return (cell // self.size, cell % self.size)
 
-    def goal(self):
+    def get_goal(self):
         return self.goal_cell
 
-    def set_goal(self, x, y):
-        self.goal_cell = self.cell_id(x, y)
+    def set_goal(self, cell):
+        self.goal_cell = cell
 
     def init_walls(self):
         """
@@ -193,6 +195,10 @@ class Maze:
         wall = self.walls[cell] >> direction * 2
         return wall & self.mask == WALL_ABSENT
 
+    def cell_is_visited(self, cell):
+        return self.walls[cell] & ALL_UNKNOWN == 0
+
+
     def neighbour(self, cell, direction):
         """
         Calculate and return the offset of a neighbouring cell.
@@ -290,6 +296,8 @@ class Maze:
         str += line + "\n"
         self.mask = old_mask
         return str
+
+
 
     def flood(self, target_cell):
         """
