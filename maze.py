@@ -96,6 +96,8 @@ class Maze:
         self.set_wall(0, DIR_NORTH, WALL_ABSENT)
 
     def init_walls_from_string(self, lines):
+        # TODO: micropython cannot do this because it can only
+        # do slices with a step of one
         ROW_DIVISOR = 2
         COL_DIVISOR = 4
         self.size = max(len(lines) // ROW_DIVISOR,
