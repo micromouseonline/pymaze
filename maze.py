@@ -207,6 +207,11 @@ class Maze:
         return wall & self.mask == WALL_ABSENT
 
     def cell_is_visited(self, cell):
+        """
+        Returns True if the cell has been visited
+        A cell is considered visited if all of the walls are known.
+        You do not actually have to go there, just see all the walls
+        """
         return self.walls[cell] & ALL_UNKNOWN == 0
 
 
