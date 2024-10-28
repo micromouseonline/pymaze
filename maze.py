@@ -424,9 +424,13 @@ class Maze:
 
 
 if __name__ == "__main__":
+    """
+    Here is some code that will run the flood multiple times and display
+    the time taken. None of this is needed by the mouse 
+    """
     # Example usage
     maze = Maze()
-
+    # set up a standard maze that is mostly empty
     maze.init_walls()
     maze.update_wall(maze.cell_id(7, 7), DIR_WEST, WALL_PRESENT)
     maze.update_wall(maze.cell_id(7, 7), DIR_SOUTH, WALL_PRESENT)
@@ -441,14 +445,11 @@ if __name__ == "__main__":
     maze.update_wall(maze.cell_id(4, 4), DIR_EAST, WALL_PRESENT)
     maze.update_wall(maze.cell_id(4, 4), DIR_SOUTH, WALL_PRESENT)
     maze.update_wall(maze.cell_id(4, 4), DIR_WEST, WALL_PRESENT)
-
-    maze.get_maze_str()
-
-    # exit()
+    # now do some performance runs
     start_time = millis()
     target = maze.cell_id(7, 7)
     for _ in range(iterations()):
-        distances = maze.flood(target)
+        distances = maze.flood_for_search(target)
     end_time = millis()
     t = end_time - start_time
     maze_str = maze.get_maze_str(VIEW_COSTS, OPEN_MAZE_MASK)
