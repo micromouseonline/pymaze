@@ -321,11 +321,28 @@ class Maze:
     @micropython.native
     def flood(self, target_cell):
         """
-        While exploring, the 'open' view should be used to find exits. This is  
-        accomplished by adding a class variable which is used to set the mask used when 
-        examining maze walls.
+        General purpose maze flood fills te cost list with the Manhattan
+        from the target cell for every other cell in the maze.
 
-        The 'closed' view should be used to find the shortest path.
+        Do not use this function directly. Instead use one of the special functions
+        listed at the end:
+          
+          flood_for_search(target) - use this while searching for the shortest path until
+                                     the target is found and the maze does not yet have a 
+                                     known shortest path
+
+          flood_for_speed_run(target) - use this when the maze is known to have a 
+                                        safe path and you want to safely calculate a speed run
+
+          speed_run_possible() - use this to check if the maze has a known shortest path
+                                 returns True when you have searched enough of the maze
+                                 to know there is an optimal, shortest path                                  
+
+        You can make a speed run at any time after you have found the goal by calling
+        flood_for_speed_run(target). Any path you then calculate will only pass through 
+        cleels that have been explored. 
+
+        If you then want to search some more, you can must call flood_for_search(target).
 
         For better performance, the flood method makes use of the intimate knowledge it has
         about the maze. 
