@@ -340,8 +340,9 @@ class Maze:
         EAST_MASK = MASK << DIR_EAST * 2
         SOUTH_MASK = MASK << DIR_SOUTH * 2
         WEST_MASK = MASK << DIR_WEST * 2
+        MAX_COST = self.size * self.size
 
-        self.cost = [None for _ in range(self.size * self.size)]
+        self.cost = [MAX_COST for _ in range(self.size * self.size)]
         self.cost[target_cell] = 0
         head = 0
         tail = 0
@@ -356,28 +357,28 @@ class Maze:
 
             if walls_here & NORTH_MASK == 0:
                 neighbour = here + 1
-                if self.cost[neighbour] is None:
+                if self.cost[neighbour]  == MAX_COST:
                     self.cost[neighbour] = next_cost
                     queue[tail] = neighbour
                     tail += 1
 
             if walls_here & EAST_MASK == 0:
                 neighbour = here + self.size
-                if self.cost[neighbour] is None:
+                if self.cost[neighbour]  == MAX_COST:
                     self.cost[neighbour] = next_cost
                     queue[tail] = neighbour
                     tail += 1
 
             if walls_here & SOUTH_MASK == 0:
                 neighbour = here - 1
-                if self.cost[neighbour] is None:
+                if self.cost[neighbour]  == MAX_COST:
                     self.cost[neighbour] = next_cost
                     queue[tail] = neighbour
                     tail += 1
 
             if walls_here & WEST_MASK == 0:
                 neighbour = here - self.size
-                if self.cost[neighbour] is None:
+                if self.cost[neighbour]  == MAX_COST:
                     self.cost[neighbour] = next_cost
                     queue[tail] = neighbour
                     tail += 1

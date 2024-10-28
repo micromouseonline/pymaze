@@ -193,7 +193,8 @@ class TestMazeFlood(unittest.TestCase):
         target = maze.get_goal()
         start = maze.cell_id(0, 0)
         maze.flood(target)
-        self.assertEqual(maze.cost[start], None)
+        MAX_COST = maze.size * maze.size
+        self.assertEqual(maze.cost[start], MAX_COST)
 
     def test_maze_flood_empty_maze_reverse(self):
         maze = Maze()
