@@ -53,31 +53,33 @@ class TestMazeCellID(unittest.TestCase):
         maze = Maze()
         self.assertEqual(maze.cell_id(0, 0), 0)
         self.assertEqual(maze.cell_id(0, 1), 1)
-        self.assertEqual(maze.cell_id(1, 0), 16)
-        self.assertEqual(maze.cell_id(1, 1), 17)
+        self.assertEqual(maze.cell_id(1, 0), maze.size)
+        self.assertEqual(maze.cell_id(1, 1), maze.size+1)
 
     def test_maze_cell_xy(self):
         maze = Maze()
         x, y = maze.cell_xy(18)
-        self.assertEqual(x, 1)
-        self.assertEqual(y, 2)
+        self.assertEqual(x, 18 // maze.size)
+        self.assertEqual(y, 18 % maze.size)
+                         
 
 
 class TestMazeCellNeighbour(unittest.TestCase):
 
     def test_maze_cell_neighbour(self):
         maze = Maze()
-        self.assertEqual(maze.neighbour(17, DIR_NORTH), 17 + 1)
-        self.assertEqual(maze.neighbour(17, DIR_EAST),  17 + 16)
-        self.assertEqual(maze.neighbour(17, DIR_SOUTH), 17 - 1)
-        self.assertEqual(maze.neighbour(17, DIR_WEST),  17 - 16)
+        cell = maze.cell_id(1, 1)
+        self.assertEqual(maze.neighbour(cell, DIR_NORTH), cell + 1)
+        self.assertEqual(maze.neighbour(cell, DIR_EAST),  cell + maze.size)
+        self.assertEqual(maze.neighbour(cell, DIR_SOUTH), cell - 1)
+        self.assertEqual(maze.neighbour(cell, DIR_WEST),  cell - maze.size)
 
 
 class TestMazeWalls(unittest.TestCase):
 
-    def test_default_size_is_16(self):
+    def test_default_size_is_maze_size(self):
         maze = Maze()
-        self.assertEqual(maze.size, 16)
+        self.assertEqual(maze.size, maze.size)
 
     def test_maze_default_walls(self):
         maze = Maze()
@@ -86,7 +88,7 @@ class TestMazeWalls(unittest.TestCase):
 
     def test_maze_default_cost(self):
         maze = Maze()
-        self.assertEqual(maze.cost[0], None)
+        self.assertEqual(maze.cost[0], maze.MAX_COST)
 
     def test_maze_mask_setting(self):
         maze = Maze()
@@ -232,12 +234,12 @@ class TestMazeSolution(unittest.TestCase):
     def test_maze_has_no_solution_after_init(self):
         maze = Maze()
         maze.init_walls()
-        self.assertFalse(maze.has_solution())
+        self.assertFalse(maze.speed_run_possible())
 
     def test_maze_has_solution_after_explore(self):
         maze = Maze()
         maze.init_walls_from_string(all_japan_2007)
-        self.assertTrue(maze.has_solution())
+        self.assertTrue(maze.speed_run_possible())
 
 
 class TestMazeLoad(unittest.TestCase):
