@@ -406,17 +406,18 @@ class Maze:
     def flood_for_search(self, target_cell):    
         mask = self.mask
         self.mask = OPEN_MAZE_MASK
-        self.mask = OPEN_MAZE_MASK
-        return self.flood(target_cell)
+        cost = self.flood(target_cell)
         self.mask = mask
+        return cost
     
     def flood_for_speed_run(self, target_cell):    
         mask = self.mask
         self.mask = CLOSED_MAZE_MASK
-        return self.flood(target_cell)
+        cost = self.flood(target_cell)
         self.mask = mask
+        return cost
 
-    def speed_run_possible(self):
+    def speed_run_possible(self):        
         searchrun_cost = self.flood_for_search(self.get_goal())
         speedrun__cost = self.flood_for_speed_run(self.get_goal())
         return searchrun_cost == speedrun__cost
