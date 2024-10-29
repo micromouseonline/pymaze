@@ -5,7 +5,20 @@ A Maze class for micromouse robots running MicroPython
 For those people building a micromouse and wanting to program it in Python - specifically 
 MicroPython - there are many challenges. One of those is to store a map of the maze that can be updated and flooded in an efficient manner. Python is not known for its high performance and it is not always obvious how to get the best speed out of your code.
 
-Depending on how you structure your micromouse code, it can be especially important to flood the maze map as quickly as possible. The method used in this class can perform a flood of an empty maze in about 14ms when running on a stock Raspberry Pi Pico board. By comparison, the code proposed by CoPilot took 1.3 seconds.
+Depending on how you structure your micromouse code, it can be especially important to flood the maze map as quickly as possible. The method used in the example code described here can perform a flood of an empty maze in about 14ms when running on a stock Raspberry Pi Pico board. By comparison, the code proposed by CoPilot took 1.3 seconds.
+
+## Implementations
+
+There are two separate but similar implementations included in this repository. In terms of the basic flood of the maze, both implementations take the same approach and use a well established algorithm that can be found in many other examples. Except CoPilot of course :)
+
+ - **Inline Code**
+An implementation by David Hannaford (`maze_dh.py`) that is intended to be simply included in your main Python application gives you a way to perform a flood of the stored maze map. It purposely concerns itself almost entirely with that function though there are also functions that let you see the wall and flood data on a terminal. This code is only meant to run under micropython. 
+
+
+ - **Maze Class**
+The other implementation (`maze.py`) is intended to be a more complete implementation of all the functions needed to allow you to map, store and flood a micromouse maze. Although normally used as part of a multi-file Python application, the class definition and associated constants could be copied into a single-file application and used there. this is a more complex implementation because it provides additional functionality. However, if you look at the `flood()` method you will see that it uses essentially the same algorithm as the other example. The following text describes this Maze class in more detail
+
+---
 
 ## Files
 
