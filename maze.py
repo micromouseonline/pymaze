@@ -1,7 +1,7 @@
 
 #################################################################################
 # this bit of stuff lets us use the performance-enhancing features of MicroPython
-# if they are available.
+# if they are available. With it the flood is twice as fast.
 # It is Python magic and you do not have to understand it to use it
 try:
     import micropython
@@ -10,7 +10,6 @@ except ImportError:
     import types
     micropython = types.SimpleNamespace(native=lambda f: f)
 ################################################################################
-
 
 
 WALL_ABSENT = 0
@@ -242,7 +241,6 @@ class Maze:
         """
         return self.walls[cell] & ALL_UNKNOWN == 0
 
-
     def neighbour(self, cell, direction):
         """
         Calculate and return the offset of a neighbouring cell.
@@ -260,8 +258,8 @@ class Maze:
         elif direction == DIR_WEST:
             neighbour = cell + self.size * self.size - self.size
         return neighbour % (self.size * self.size)
-    
-    def direction_to_smallest(self, cell, start_direction = DIR_NORTH):
+
+    def direction_to_smallest(self, cell, start_direction=DIR_NORTH):
         """
         Return the direction of the smallest neighbouring cell.
         Testing is done in the order ahead, left, right, back.
@@ -270,30 +268,29 @@ class Maze:
         dir = start_direction
         cost = self.MAX_COST + 1
         if self.cell_has_exit(cell, dir):
-            ahead_cost = self.cost[self.neighbour(cell,dir)]
+            ahead_cost = self.cost[self.neighbour(cell, dir)]
             if ahead_cost < cost:
                 cost = ahead_cost
         left_dir = left_from(dir)
         if self.cell_has_exit(cell, left_dir):
-            left_cost = self.cost[self.neighbour(cell,left_dir)]
+            left_cost = self.cost[self.neighbour(cell, left_dir)]
             if left_cost < cost:
                 dir = left_dir
                 cost = left_cost
         right_dir = right_from(dir)
         if self.cell_has_exit(cell, right_dir):
-            right_cost = self.cost[self.neighbour(cell,right_dir)]
+            right_cost = self.cost[self.neighbour(cell, right_dir)]
             if right_cost < cost:
                 dir = right_dir
                 cost = right_cost
         back_dir = behind_from(dir)
         if self.cell_has_exit(cell, back_dir):
-            back_cost = self.cost[self.neighbour(cell,back_dir)]
+            back_cost = self.cost[self.neighbour(cell, back_dir)]
             if back_cost < cost:
                 dir = back_dir
                 cost = back_cost
 
         return dir
-                              
 
     def get_maze_str(self, view=VIEW_PLAIN, mask=OPEN_MAZE_MASK):
         """
@@ -341,8 +338,6 @@ class Maze:
         self.mask = old_mask
         return str
 
-
-
     @micropython.native
     def flood(self, target_cell):
         """
@@ -351,7 +346,7 @@ class Maze:
 
         Do not use this function directly. Instead use one of the special functions
         listed at the end:
-          
+
           flood_for_search(target) - use this while searching for the shortest path until
                                      the target is found and the maze does not yet have a 
                                      known shortest path
@@ -400,49 +395,49 @@ class Maze:
 
             if walls_here & NORTH_MASK == 0:
                 neighbour = here + 1
-                if self.cost[neighbour]  == MAX_COST:
+                if self.cost[neighbour] == MAX_COST:
                     self.cost[neighbour] = next_cost
                     queue[tail] = neighbour
                     tail += 1
 
             if walls_here & EAST_MASK == 0:
                 neighbour = here + self.size
-                if self.cost[neighbour]  == MAX_COST:
+                if self.cost[neighbour] == MAX_COST:
                     self.cost[neighbour] = next_cost
                     queue[tail] = neighbour
                     tail += 1
 
             if walls_here & SOUTH_MASK == 0:
                 neighbour = here - 1
-                if self.cost[neighbour]  == MAX_COST:
+                if self.cost[neighbour] == MAX_COST:
                     self.cost[neighbour] = next_cost
                     queue[tail] = neighbour
                     tail += 1
 
             if walls_here & WEST_MASK == 0:
                 neighbour = here - self.size
-                if self.cost[neighbour]  == MAX_COST:
+                if self.cost[neighbour] == MAX_COST:
                     self.cost[neighbour] = next_cost
                     queue[tail] = neighbour
                     tail += 1
 
         return self.cost[0]
-    
-    def flood_for_search(self, target_cell):    
+
+    def flood_for_search(self, target_cell):
         mask = self.mask
         self.mask = OPEN_MAZE_MASK
         cost = self.flood(target_cell)
         self.mask = mask
         return cost
-    
-    def flood_for_speed_run(self, target_cell):    
+
+    def flood_for_speed_run(self, target_cell):
         mask = self.mask
         self.mask = CLOSED_MAZE_MASK
         cost = self.flood(target_cell)
         self.mask = mask
         return cost
 
-    def speed_run_possible(self):        
+    def speed_run_possible(self):
         searchrun_cost = self.flood_for_search(self.get_goal())
         speedrun__cost = self.flood_for_speed_run(self.get_goal())
         return searchrun_cost == speedrun__cost

@@ -49,7 +49,6 @@ class TestMazeCellID(unittest.TestCase):
         x, y = maze.cell_xy(18)
         self.assertEqual(x, 18 // maze.size)
         self.assertEqual(y, 18 % maze.size)
-                         
 
 
 class TestMazeCellNeighbour(unittest.TestCase):
@@ -145,6 +144,7 @@ class TestMazeWalls(unittest.TestCase):
         maze.update_wall(cell, DIR_SOUTH, WALL_ABSENT)
         self.assertFalse(maze.cell_has_exit(cell, DIR_SOUTH))
 
+
 class TestMazeCellVisited(unittest.TestCase):
     def test_maze_cell_is_visited(self):
         maze = Maze()
@@ -152,7 +152,7 @@ class TestMazeCellVisited(unittest.TestCase):
         maze.init_walls()
         self.assertTrue(maze.cell_is_visited(0))
         self.assertFalse(maze.cell_is_visited(1))
-    
+
 
 class TestMazeGoal(unittest.TestCase):
     def test_maze_goal_default(self):
@@ -197,6 +197,7 @@ class TestMazeFlood(unittest.TestCase):
         top_right = maze.cell_id(maze.size-1, maze.size-1)
         self.assertEqual(maze.cost[top_right], 30)
 
+
 class TestDirectionToSmallest(unittest.TestCase):
 
     def test_direction_to_smallest(self):
@@ -204,18 +205,21 @@ class TestDirectionToSmallest(unittest.TestCase):
         maze.init_walls()
         maze.set_mask(OPEN_MAZE_MASK)
         maze.flood(maze.get_goal())
-        cell = maze.cell_id(1,1)
+        cell = maze.cell_id(1, 1)
 
-        self.assertEqual(maze.direction_to_smallest(cell,DIR_NORTH), DIR_NORTH)
-        self.assertEqual(maze.direction_to_smallest(cell,DIR_EAST), DIR_EAST)
-        self.assertEqual(maze.direction_to_smallest(cell,DIR_SOUTH), DIR_EAST)
-        self.assertEqual(maze.direction_to_smallest(cell,DIR_WEST), DIR_NORTH)
-        
-        cell = maze.cell_id(0,0)
-        self.assertEqual(maze.direction_to_smallest(cell,DIR_NORTH), DIR_NORTH)
-        self.assertEqual(maze.direction_to_smallest(cell,DIR_EAST), DIR_NORTH)
-        self.assertEqual(maze.direction_to_smallest(cell,DIR_SOUTH), DIR_NORTH)
-        self.assertEqual(maze.direction_to_smallest(cell,DIR_WEST), DIR_NORTH)
+        self.assertEqual(maze.direction_to_smallest(
+            cell, DIR_NORTH), DIR_NORTH)
+        self.assertEqual(maze.direction_to_smallest(cell, DIR_EAST), DIR_EAST)
+        self.assertEqual(maze.direction_to_smallest(cell, DIR_SOUTH), DIR_EAST)
+        self.assertEqual(maze.direction_to_smallest(cell, DIR_WEST), DIR_NORTH)
+
+        cell = maze.cell_id(0, 0)
+        self.assertEqual(maze.direction_to_smallest(
+            cell, DIR_NORTH), DIR_NORTH)
+        self.assertEqual(maze.direction_to_smallest(cell, DIR_EAST), DIR_NORTH)
+        self.assertEqual(maze.direction_to_smallest(
+            cell, DIR_SOUTH), DIR_NORTH)
+        self.assertEqual(maze.direction_to_smallest(cell, DIR_WEST), DIR_NORTH)
 
 
 class TestMazeSolution(unittest.TestCase):
