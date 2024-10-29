@@ -22,11 +22,14 @@ The other implementation (`maze.py`) is intended to be a more complete implement
 
 ## Files
 
-There are several files in the repository. You should need only the `maze.py` file for your project. The other files provide some support and testing functions for development on a PC.
+There are several files in the repository. For the inline code you should only need the `maze_dh.py` file. For the Maze Class you should need only the `maze.py` file for your project. The other files provide some support and testing functions for development on a PC.
+
+### `maze_dh.py`
+This contains code fragments meant to be copied directly into another project. It is not a standalone item. You should copy in the sections up to the examples at the bottom. Only use those if you want to  manually flood the maze and print the results. You will need to provide your own implemnation of the functions needed to set and update the map. there are a number of constants defined at thee top of the file. Do not try to use this file's contents with the maze class described below - they are not compatible.
 
 
 ### `maze.py`
-This contains the Maze class that you add to your project along with some definitions for constants and a couple of utilities related to pathfinding. You can keep it as a single file or add just the code into your main python script if that is the way you are set up. See below for details of the methods provided by the Maze class
+This contains the Maze class that you add to your project along with some definitions for constants and a couple of utilities related to pathfinding. You can keep it as a single file or add just the code into your main python script if that is the way you are set up. See below for details of the methods provided by the Maze class. Do not try to use this file's contents with the inline maze code described above - they are not compatible.
 
 For demonstration purposes, at the end of the file is an entry point (the `if __name__ == "___main__":` part) that will run a flood several times depending on the platform you use. It can be run on the desktop or directly on the target board. It is safe to delete this if you do not want to run that code.
 
