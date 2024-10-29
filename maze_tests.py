@@ -10,7 +10,6 @@ if sys.implementation.name == 'micropython':
 
 import unittest
 import time
-from maze_support import *
 from maze import *
 from maze_files import *
 
@@ -25,17 +24,6 @@ def millis():
     else:
         # Desktop Python
         return int(round(time.time() * 1000))
-
-
-def iterations():
-    """
-    Since the pico is much slower than a PC, it makes sense that any
-    timing/performance tests are run a different number of times on each.
-    """
-    if sys.implementation.name == 'micropython':
-        return 100
-    else:
-        return 10000
 
 
 class TestTiming(unittest.TestCase):

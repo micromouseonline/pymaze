@@ -1,12 +1,3 @@
-"""
-maze.py
-"""
-
-import time
-from maze_support import *
-from maze_files import *
-import os
-import sys
 
 #################################################################################
 # this bit of stuff lets us use the performance-enhancing features of MicroPython
@@ -49,6 +40,40 @@ DIR_SOUTH = 2
 DIR_WEST = 3
 DIR_COUNT = 4
 DIR_BLOCKED = -1
+
+"""
+ * Heading represents the direction that the robot is facing. 
+ * For example, a robot is facing east when heading is HDG_EAST
+ * These are all more relevant to the mouse
+"""
+HDG_NORTH = 0
+HDG_EAST = 1
+HDG_SOUTH = 2
+HDG_WEST = 3
+HDG_COUNT = 4
+HDG_BLOCKED = -1
+
+MOVE_AHEAD = 0
+MOVE_LEFT = 1
+MOVE_RIGHT = 2
+MOVE_BACK = 3
+MOVE_COUNT = 4
+
+
+def right_from(heading: int) -> int:
+    return ((heading + 1) % HDG_COUNT)
+
+
+def left_from(heading: int) -> int:
+    return ((heading + HDG_COUNT - 1) % HDG_COUNT)
+
+
+def ahead_from(heading: int) -> int:
+    return heading
+
+
+def behind_from(heading: int) -> int:
+    return ((heading + 2) % HDG_COUNT)
 
 
 class Maze:
@@ -428,6 +453,26 @@ if __name__ == "__main__":
     Here is some code that will run the flood multiple times and display
     the time taken. None of this is needed by the mouse 
     """
+
+    import time
+    from maze_files import *
+    import os
+    import sys
+
+    def millis():
+        if sys.implementation.name == 'micropython':
+            # MicroPython
+            return time.ticks_ms()
+        else:
+            # Desktop Python
+            return int(round(time.time() * 1000))
+
+    def iterations():
+        if sys.implementation.name == 'micropython':
+            return 1
+        else:
+            return 1000
+
     # Example usage
     maze = Maze()
     # set up a standard maze that is mostly empty
