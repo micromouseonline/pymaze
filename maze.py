@@ -40,24 +40,6 @@ DIR_WEST = 3
 DIR_COUNT = 4
 DIR_BLOCKED = -1
 
-"""
- * Heading represents the direction that the robot is facing. 
- * For example, a robot is facing east when heading is HDG_EAST
- * These are all more relevant to the mouse
-"""
-HDG_NORTH = 0
-HDG_EAST = 1
-HDG_SOUTH = 2
-HDG_WEST = 3
-HDG_COUNT = 4
-HDG_BLOCKED = -1
-
-MOVE_AHEAD = 0
-MOVE_LEFT = 1
-MOVE_RIGHT = 2
-MOVE_BACK = 3
-MOVE_COUNT = 4
-
 
 def right_from(heading: int) -> int:
     return ((heading + 1) % HDG_COUNT)
@@ -271,19 +253,19 @@ class Maze:
             ahead_cost = self.cost[self.neighbour(cell, dir)]
             if ahead_cost < cost:
                 cost = ahead_cost
-        left_dir = left_from(dir)
+        left_dir = ((dir + DIR_COUNT - 1) % DIR_COUNT)
         if self.cell_has_exit(cell, left_dir):
             left_cost = self.cost[self.neighbour(cell, left_dir)]
             if left_cost < cost:
                 dir = left_dir
                 cost = left_cost
-        right_dir = right_from(dir)
+        right_dir = (dir + 1) % DIR_COUNT
         if self.cell_has_exit(cell, right_dir):
             right_cost = self.cost[self.neighbour(cell, right_dir)]
             if right_cost < cost:
                 dir = right_dir
                 cost = right_cost
-        back_dir = behind_from(dir)
+        back_dir = (dir + 2) % DIR_COUNT
         if self.cell_has_exit(cell, back_dir):
             back_cost = self.cost[self.neighbour(cell, back_dir)]
             if back_cost < cost:
