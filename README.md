@@ -9,7 +9,7 @@ Depending on how you structure your micromouse code, it can be especially import
 
 ## Implementations
 
-There are two separate but similar implementations included in this repository. In terms of the basic flood of the maze, both implementations take the same approach and use a well established algorithm that can be found in many other examples. Except CoPilot of course :)
+There are two separate but similar implementations included in this repository. In terms of the basic flood of the maze, both implementations take the same approach and use a well established algorithm that can be found in many other examples. Except CoPilot of course :) Note that the two implementations are not interchangeable or compatible as they use different assumptions about the mapping of the maze.
 
  - **Inline Code**
 An implementation by David Hannaford (`maze_dh.py`) that is intended to be simply included in your main Python application gives you a way to perform a flood of the stored maze map. It purposely concerns itself almost entirely with that function though there are also functions that let you see the wall and flood data on a terminal. This code is only meant to run under micropython. 
