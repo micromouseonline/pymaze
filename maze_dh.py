@@ -1,6 +1,5 @@
 # Example flood routines and example of use
 # import these 2 items if not already imported in your code
-import array
 import time
 # These items in capitals are constants used in the routines
 WIDTH = 16  # is 16 in full size maze
@@ -16,16 +15,16 @@ SOUTH = 4
 WEST = 8
 VISITED = 16
 numcells = (TABLEWIDTH * (TABLEHEIGHT + 1)) + 10
-# set up and initialise arrays for walls and flood values in maze
-# array of cell items initialised to zero starting at cell 0
-walls = array.array('i', [0]*numcells)
+# set up and initialise lists for walls and flood values in maze
+# list of cell items initialised to zero starting at cell 0
+walls = [0]*numcells
 # walls[0] = 99   example of setting an indexed value
-# array that holds flood values for maze cells
-maze = array.array('i', [0]*numcells)
+# list that holds flood values for maze cells
+maze = [0]*numcells
 # cells are numbers from left to right then upwards from start cell as zero
 # to check bits in a byte use walls[n] & NORTH to check the north wall bit, walls[n] & EAST for next bit etc
-# array that holds the list of cells to be processed next by teh flood routine
-proclist = array.array('i', [0]*(numcells + 10))
+# list that holds the list of cells to be processed next by teh flood routine
+proclist = [0]*numcells
 
 # Call this routine to fill the flood table with high values prior to doing the flood
 
@@ -48,7 +47,7 @@ def floodmaze(strt, fin):   # flood the maze from the strt cell to the fin cell
     curr = strt            # current cell being processed
     floodval = 0
     maze[strt] = 1         # set start cell flood value to one
-    # index for processing list array of cells to say where to add to end of list
+    # index for processing list of cells to say where to add to end of list
     n = 0
     nxt = 0                # pointer to the first unprocessed item on the list
     while (flooded == 0):
