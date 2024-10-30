@@ -1,3 +1,9 @@
+# maze.py
+# Maze code for MicroPython
+# Copyright (c) 2024 Peter Harrison
+# Contributions from Paul Busby and David Hannaford
+# Released under the MIT License (https://opensource.org/licenses/MIT)
+
 
 #################################################################################
 # this bit of stuff lets us use the performance-enhancing features of MicroPython
@@ -66,9 +72,10 @@ class Maze:
         self.walls = [ALL_UNKNOWN for _ in range(self.size * self.size)]
         self.mask = OPEN_MAZE_MASK
         self.goal_cell = self.cell_id(7, 7)
+        self.init_walls()
 
     def __str__(self) -> str:
-        return self.get_maze_str(VIEW_PLAIN)
+        return self.get_maze_string(VIEW_PLAIN)
 
     # TODO: add a __repr__ method that will prodiuce a Python declaration?
 
@@ -274,13 +281,13 @@ class Maze:
 
         return dir
 
-    def get_maze_str(self, view=VIEW_PLAIN, mask=OPEN_MAZE_MASK):
+    def get_maze_string(self, view=VIEW_PLAIN):
         """
         Print a visual representation of the maze
         If view == VIEW_COSTS, print the cost of each cell
         """
         old_mask = self.mask
-        self.mask = mask
+        self.mask = OPEN_MAZE_MASK
         str = ""
         for y in range(self.size - 1, -1, -1):
             line = "o"
@@ -474,12 +481,12 @@ if __name__ == "__main__":
         distances = maze.flood_for_search(target)
     end_time = millis()
     t = end_time - start_time
-    maze_str = maze.get_maze_str(VIEW_COSTS, OPEN_MAZE_MASK)
+    maze_str = maze.get_maze_string(VIEW_COSTS)
     print(maze_str)
     print("Flood distance correct: ", maze.cost[0] == 20)
     print(f"{sys.implementation.name} - maze: Execution Time for {iterations()} iterations: {t:} milliseconds")
 
     # maze.init_walls_from_string(all_japan_2007)
     # maze.flood(target)
-    # maze_str = maze.get_maze_str(VIEW_COSTS, OPEN_MAZE_MASK)
-    # print(maze)
+    # maze_str = maze.get_maze_string(VIEW_COSTS)
+    # print(maze_str)
