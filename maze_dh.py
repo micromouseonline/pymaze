@@ -30,6 +30,7 @@ proclist = [0]*numcells
 
 
 def floodclear():  # clear the flood table
+    global maze
     for x in range(256):
         maze[x] = numcells
 
