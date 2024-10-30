@@ -14,17 +14,17 @@ EAST = 2
 SOUTH = 4
 WEST = 8
 VISITED = 16
-numcells = (TABLEWIDTH * (TABLEHEIGHT + 1)) + 10
+numcells = TABLEWIDTH * TABLEHEIGHT
 # set up and initialise lists for walls and flood values in maze
 # list of cell items initialised to zero starting at cell 0
-walls = [0]*numcells
+walls = [0] * numcells
 # walls[0] = 99   example of setting an indexed value
 # list that holds flood values for maze cells
-maze = [0]*numcells
-# cells are numbers from left to right then upwards from start cell as zero
+maze = [0] * numcells
+# cells are numbered from left to right then upwards from start cell as zero
 # to check bits in a byte use walls[n] & NORTH to check the north wall bit, walls[n] & EAST for next bit etc
 # list that holds the list of cells to be processed next by teh flood routine
-proclist = [0]*numcells
+proclist = [0] * numcells
 
 # Call this routine to fill the flood table with high values prior to doing the flood
 
@@ -113,38 +113,62 @@ def setoutsidewalls():
     walls[0] = walls[0] | VISITED
 
 # This routine prints out the flood table - use it for diagnostic purposes
-
-
 def showflood():
-    x = ((HEIGHT-1) * TABLEWIDTH)
     y = HEIGHT - 1
-    print("Flood table")
-    while (x >= 0):
-        if (y < 10):
-            space = "  "
-        else:
-            space = " "
-        print(y, space, maze[x], maze[x+1], maze[x+2], maze[x+3], maze[x+4], maze[x+5], maze[x+6], maze[x+7],
-              maze[x+8], maze[x+9], maze[x+10], maze[x+11], maze[x+12], maze[x+13], maze[x+14], maze[x+15])
-        x = x - TABLEWIDTH
+    print("Flood Table")
+    # all the north walls
+    while y >= 0:                   # work down from the top
+        line = '    '
+        for x in range(WIDTH):
+            line += 'o---' if walls[y * WIDTH + x] & NORTH else 'o   '
+        line = line + 'o'
+        print (line)
+        line = f'{y:>2}  '  # the row number
+        for x in range(WIDTH):
+            line += '|' if walls[y * WIDTH + x] & WEST else ' '
+            line += f'{maze[y * WIDTH + x]:>3}'
+        line = line + '|' if walls[y * WIDTH + x] & EAST else ' '
+        print(line)
         y = y - 1
+    line = '    '
+    for x in range(WIDTH):
+        line += 'o---' if walls[0 * WIDTH + x] & SOUTH else 'o   '
+    line = line + 'o'
+    print (line)
+    line = '     '
+    for x in range(WIDTH):
+        line += f'{x:>3} ' ## the column number
+    print (line)
+    print()
+
 
 # This routine prints out the maze walls table - use it for diagnostic purposes
-
-
 def showwalls():
-    x = ((HEIGHT-1) * TABLEWIDTH)
     y = HEIGHT - 1
     print("Maze walls")
-    while (x >= 0):
-        if (y < 10):
-            space = "  "
-        else:
-            space = " "
-        print(y, space, walls[x], walls[x+1], walls[x+2], walls[x+3], walls[x+4], walls[x+5], walls[x+6], walls[x+7],
-              walls[x+8], walls[x+9], walls[x+10], walls[x+11], walls[x+12], walls[x+13], walls[x+14], walls[x+15])
-        x = x - TABLEWIDTH
+    # all the north walls
+    while y >= 0:                   # work down from the top
+        line = '    '
+        for x in range(WIDTH):
+            line += 'o---' if walls[y * WIDTH + x] & NORTH else 'o   '
+        line = line + 'o'
+        print (line)
+        line = f'{y:>2}  ' ## the row number
+        for x in range(WIDTH):
+            line += '|   ' if walls[y * WIDTH + x] & WEST else '    '
+        line = line + '|' if walls[y * WIDTH + x] & EAST else ' '
+        print(line)
         y = y - 1
+    line = '    '
+    for x in range(WIDTH):
+        line += 'o---' if walls[0 * WIDTH + x] & SOUTH else 'o   '
+    line = line + 'o'
+    print (line)
+    line = '     '
+    for x in range(WIDTH):
+        line += f'{x:>3} ' # the column number
+    print (line)
+    print()
 
 
 # ********************************************************************************
