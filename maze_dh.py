@@ -1,3 +1,9 @@
+# maze_dh.py
+# Maze code for MicroPython
+# Copyright (c) 2024 David Hannaford
+# Contributions from Peter Harrison and Paul Busby
+# Released under the MIT License (https://opensource.org/licenses/MIT)
+
 # Example flood routines and example of use
 # import these 2 items if not already imported in your code
 import time
@@ -22,7 +28,8 @@ walls = [0] * numcells
 # list that holds flood values for maze cells
 maze = [0] * numcells
 # cells are numbered from left to right then upwards from start cell as zero
-# to check bits in a byte use walls[n] & NORTH to check the north wall bit, walls[n] & EAST for next bit etc
+# to check bits in a byte use walls[n] & NORTH to check the north wall bit, 
+# walls[n] & EAST for next bit etc
 # list that holds the list of cells to be processed next by teh flood routine
 proclist = [0] * numcells
 
@@ -48,7 +55,7 @@ def floodmaze(strt, fin):   # flood the maze from the strt cell to the fin cell
     curr = strt                     # current cell being processed
     floodval = 0
     maze[strt] = 1                  # set start cell flood value to one
-    n = 0                           # index for processing list of cells to say where to add to end of list
+    n = 0                           # index for end of processing list of cells 
     nxt = 0                         # pointer to the first unprocessed item on the list
     while (flooded == 0):
         fval = maze[curr]           # get current value of current cell
@@ -179,3 +186,4 @@ floodmaze(MIDDLE, START)
 # these two statements will print out the flood table and the walls table
 showflood()
 showwalls()
+
