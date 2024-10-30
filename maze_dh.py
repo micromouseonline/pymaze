@@ -39,70 +39,64 @@ def floodclear():  # clear the flood table
 
 def floodmaze(strt, fin):   # flood the maze from the strt cell to the fin cell
     global maze, walls, floodfail, numcells
-    floodstart = time.ticks_ms()  # get time now
-    floodclear()           # clear the flood table to all 283
+    floodstart = time.ticks_ms()    # get time now
+    floodclear()                    # clear the flood table to all 283
     floodcleared = time.ticks_ms()  # get time now
     floodcleared = floodcleared - floodstart
-    flooded = 0            # set flag to not finished flooding yet
-    floodfail = 0          # flag to show if flood failed to complete to end point
-    curr = strt            # current cell being processed
+    flooded = 0                     # set flag to not finished flooding yet
+    floodfail = 0                   # flag to show if flood failed to complete to end point
+    curr = strt                     # current cell being processed
     floodval = 0
-    maze[strt] = 1         # set start cell flood value to one
-    # index for processing list of cells to say where to add to end of list
-    n = 0
-    nxt = 0                # pointer to the first unprocessed item on the list
+    maze[strt] = 1                  # set start cell flood value to one
+    n = 0                           # index for processing list of cells to say where to add to end of list
+    nxt = 0                         # pointer to the first unprocessed item on the list
     while (flooded == 0):
-        fval = maze[curr]  # get current value of current cell
+        fval = maze[curr]           # get current value of current cell
         if ((walls[curr] & SOUTH) == 0):     # is there a gap to the SOUTH of current cell
             if (maze[curr - TABLEWIDTH] == numcells):
-                # set flood value in this cell
-                maze[curr - TABLEWIDTH] = fval + 1
-                # save flood cell for future processing
-                proclist[n] = curr-TABLEWIDTH
-                n = n + 1                        # update processing list number
-                if (proclist[n-1] == fin):       # check if finished flooding
-                    flooded = 1                  # set flag to stop loop
+                maze[curr - TABLEWIDTH] = fval + 1  # set flood value in this cell
+                proclist[n] = curr-TABLEWIDTH       # save flood cell for future processing
+                n = n + 1                           # update processing list number
+                if (proclist[n-1] == fin):          # check if finished flooding
+                    flooded = 1                     # set flag to stop loop
+        
         if ((walls[curr] & EAST) == 0):      # is there a gap to the EAST of current cell
             if (maze[curr + 1] == numcells):
-                maze[curr + 1] = fval + 1        # set flood value in this cell
-                # save flood cell for future processing
-                proclist[n] = curr + 1
-                n = n + 1                        # update processing list number
-                if (proclist[n-1] == fin):           # check if finished flooding
-                    flooded = 1                      # set flag to stop loop
+                maze[curr + 1] = fval + 1           # set flood value in this cell
+                proclist[n] = curr + 1              # save flood cell for future processing
+                n = n + 1                           # update processing list number
+                if (proclist[n-1] == fin):          # check if finished flooding
+                    flooded = 1                     # set flag to stop loop
+        
         if ((walls[curr] & NORTH) == 0):     # is there a gap to the NORTH of current cell
             if (maze[curr + TABLEWIDTH] == numcells):
-                # set flood value in this cell
-                maze[curr + TABLEWIDTH] = fval + 1
-                # save flood cell for future processing
-                proclist[n] = curr + TABLEWIDTH
-                n = n + 1                        # update processing list number
-                if (proclist[n-1] == fin):           # check if finished flooding
-                    flooded = 1                      # set flag to stop loop
+                maze[curr + TABLEWIDTH] = fval + 1  # set flood value in this cell
+                proclist[n] = curr + TABLEWIDTH     # save flood cell for future processing
+                n = n + 1                           # update processing list number
+                if (proclist[n-1] == fin):          # check if finished flooding
+                    flooded = 1                     # set flag to stop loop
+        
         if ((walls[curr] & WEST) == 0):      # is there a gap to the WEST of current cell
             if (maze[curr - 1] == numcells):
-                maze[curr - 1] = fval + 1        # set flood value in this cell
-                # save flood cell for future processing
-                proclist[n] = curr - 1
-                n = n + 1                        # update processing list number
-                if (proclist[n-1] == fin):       # check if finished flooding
-                    flooded = 1                  # set flag to stop loop
+                maze[curr - 1] = fval + 1           # set flood value in this cell
+                proclist[n] = curr - 1              # save flood cell for future processing
+                n = n + 1                           # update processing list number
+                if (proclist[n-1] == fin):          # check if finished flooding
+                    flooded = 1                     # set flag to stop loop
 
         # get the location of the next cell to process
         curr = proclist[nxt]
-        nxt = nxt + 1                        # point to next item to process on the list
-        if (nxt > n):                        # check if flood unable to continue as no more cells accessible
-            floodfail = 1                     # set flood failure status flag
-            flooded = 1  # stop  the flooding loop
+        nxt = nxt + 1       # point to next item to process on the list
+        if (nxt > n):       # check if flood unable to continue as no more cells accessible
+            floodfail = 1   # set flood failure status flag
+            flooded = 1     # stop  the flooding loop
 
     floodend = time.ticks_ms()  # get time now
     floodtime = floodend - floodstart
 
-    return                                    # return
+    return              
 
 # this routine sets up the outside walls for the maze. Use once at tha start
-
-
 def setoutsidewalls():
     for x in range(WIDTH):    # does range 0 to 15 when WIDTH = 16
         y = TABLEWIDTH * (HEIGHT - 1) + x
