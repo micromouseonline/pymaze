@@ -1,6 +1,6 @@
 # pymaze
 
-A Maze class for micromouse robots running MicroPython
+Maze and flood handling code for micromouse robots running MicroPython
 
 For those people building a micromouse and wanting to program it in Python - specifically MicroPython - there are many challenges. One of those is to store a map of the maze that can be updated and flooded in an efficient manner. Python is not known for its high performance and it is not always obvious how to get the best speed out of your code.
 
@@ -8,7 +8,7 @@ Depending on how you structure your micromouse code, it can be especially import
 
 This code is only about manipulatng and flooding the maze. It is not, by any means, a starting point for getting your robot moving.
 
-Thanks go to David Hannaford and Paul Busby for their help and suggestions. One of the implementations was written by David Hannaford.
+Thanks go to David Hannaford and Paul Busby for their help and suggestions. one of the implementations was written by David Hannaford.
 
 If you have suggestions, corrections or contributions, then please make use of the Github Issues system. Pull requests will be considered for revisions.
 
@@ -18,20 +18,20 @@ If you have suggestions, corrections or contributions, then please make use of t
 There are two separate but similar implementations included in this repository. In terms of the basic flood of the maze, both implementations take the same approach and use a well established algorithm that can be found in many other examples. Except CoPilot of course :) Note that the two implementations are not interchangeable or compatible as they use different assumptions about the mapping of the maze.
 
  - **Inline Code**
-An implementation by David Hannaford (`maze_dh.py`) that is intended to be simply included in your main Python application gives you a way to perform a flood of the stored maze map. It purposely concerns itself almost entirely with that function though there are also functions that let you see the wall and flood data on a terminal. This code is only meant to run under MicroPython. 
+An implementation by David Hannaford (`maze_dh.py`) that is intended to be simply included in your main Python application that gives you a way to set detected walls into the walls table, and to perform a very efficient flood of the stored maze map. It purposely concerns itself just with those functions. To assist in debugging, there are also two routines that let you display the wall and flood data on your attached PC. This code is only meant to run under MicroPython. It was developed using Thonny and tested on an RP2040 Pico compatible processor board.
 
 
  - **Maze Class**
-The other implementation (`maze.py`) is intended to be a more complete implementation of all the functions needed to allow you to map, store and flood a micromouse maze. Although normally used as part of a multi-file Python application, the class definition and associated constants could be copied into a single-file application and used there. This is a more complex implementation because it provides additional functionality. However, if you look at the `flood()` method you will see that it uses essentially the same algorithm as the other example. The following text describes this Maze class in more detail
+The other implementation (`maze.py`) is intended to be a more complete implementation of all the functions needed to allow you to map, store and flood a micromouse maze. Although normally used as part of a multi-file Python application, the class definition and associated constants could be copied into a single-file application and used there. This is a more complex implementation because it provides additional functionality. However, if you look at the `flood()` method you will see that it uses essentially the same algorithm as the other example. The following text describes these two implementations in more detail.
 
 ---
 
-## Files
+## Implementation Files
 
 There are several files in the repository. For the inline code you should only need the `maze_dh.py` file. For the Maze class you should need only the `maze.py` file for your project. The other files provide some support and testing functions for development on a PC.
 
 ### `maze_dh.py`
-This contains code fragments meant to be copied directly into another project. It is not a standalone item. You should copy in the sections up to the examples at the bottom. Only use those if you want to manually flood the maze and print the results. You will need to provide your own implementation of the functions needed to set and update the map. There are a number of constants defined at the top of the file. Do not try to use this file's contents with the maze class described below - they are not compatible.
+This contains code fragments meant to be copied directly into another project file. It starts with constants and variables needed to run the routines, then follows with a series of routine definitions that perform the functions  It is not a standalone item. You should copy in the sections up to the examples at the bottom. Only use those examples if you want to  manually flood the maze and print the results. You will need to provide your own implemenation for moving the mouse and the detection of walls, but you can then use the setwalls routine to put this walls information into the walls table and the flood routines to carry out the floods required. There are a number of constants and variables defined at the top of the file. Do not try to use this file's contents with the maze class described below - they are not compatible. The code is highly commented so should be relatively easy to understand.
 
 
 ### `maze.py`
