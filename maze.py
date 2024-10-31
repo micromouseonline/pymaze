@@ -94,6 +94,11 @@ class Maze:
         self.set_wall(0, DIR_NORTH, WALL_ABSENT)
 
     def init_walls_from_string(self, lines):
+        """
+        Read a maze stored as a list of lines of text. The format is
+        the same as the output of get_string and the mazefiles available at
+        https://github.com/micromouseonline/mazefiles
+        """
         ROW_DIVISOR = 2
         COL_DIVISOR = 4
         self.size = max(len(lines) // ROW_DIVISOR, len(lines[0]) // COL_DIVISOR)
