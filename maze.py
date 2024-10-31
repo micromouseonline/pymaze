@@ -47,22 +47,6 @@ DIR_COUNT = 4
 DIR_BLOCKED = -1
 
 
-def right_from(heading: int) -> int:
-    return ((heading + 1) % HDG_COUNT)
-
-
-def left_from(heading: int) -> int:
-    return ((heading + HDG_COUNT - 1) % HDG_COUNT)
-
-
-def ahead_from(heading: int) -> int:
-    return heading
-
-
-def behind_from(heading: int) -> int:
-    return ((heading + 2) % HDG_COUNT)
-
-
 class Maze:
 
     def __init__(self, size=16):
