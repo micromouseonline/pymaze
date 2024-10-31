@@ -8,7 +8,7 @@ Depending on how you structure your micromouse code, it can be especially import
 
 This code is only about manipulatng and flooding the maze. It is not, by any means, a starting point for getting your robot moving.
 
-Thanks go to David Hannaford and Paul Busby for their help and suggestions. one of the implementations was written by David Hannaford.
+Thanks go to David Hannaford and Paul Busby for their help and suggestions. One of the implementations was written by David Hannaford.
 
 If you have suggestions, corrections or contributions, then please make use of the Github Issues system. Pull requests will be considered for revisions.
 
@@ -31,7 +31,7 @@ The other implementation (`maze.py`) is intended to be a more complete implement
 There are several files in the repository. For the inline code you should only need the `maze_dh.py` file. For the Maze class you should need only the `maze.py` file for your project. The other files provide some support and testing functions for development on a PC.
 
 ### `maze_dh.py`
-This contains code fragments meant to be copied directly into another project. It is not a standalone item. You should copy in the sections up to the examples at the bottom. Only use those if you want to  manually flood the maze and print the results. You will need to provide your own implemenation of the functions needed to set and update the map. There are a number of constants defined at the top of the file. Do not try to use this file's contents with the maze class described below - they are not compatible.
+This contains code fragments meant to be copied directly into another project. It is not a standalone item. You should copy in the sections up to the examples at the bottom. Only use those if you want to manually flood the maze and print the results. You will need to provide your own implementation of the functions needed to set and update the map. There are a number of constants defined at the top of the file. Do not try to use this file's contents with the maze class described below - they are not compatible.
 
 
 ### `maze.py`
