@@ -98,8 +98,7 @@ class Maze:
         # do slices with a step of one
         ROW_DIVISOR = 2
         COL_DIVISOR = 4
-        self.size = max(len(lines) // ROW_DIVISOR,
-                        len(lines[0]) // COL_DIVISOR)
+        self.size = max(len(lines) // ROW_DIVISOR, len(lines[0]) // COL_DIVISOR)
         self.walls = [ALL_UNKNOWN for _ in range(self.size * self.size)]
         cell_y = self.size - 1
         for i, line in enumerate(lines):
@@ -109,18 +108,15 @@ class Maze:
             if i % ROW_DIVISOR == 0:  # north walls
                 for cell_x, c in enumerate(line[2::COL_DIVISOR]):
                     wall_state = WALL_PRESENT if c == '-' else WALL_ABSENT
-                    self.update_wall(self.cell_id(
-                        cell_x, cell_y), DIR_NORTH, wall_state)
+                    self.update_wall(self.cell_id(cell_x, cell_y), DIR_NORTH, wall_state)
             else:  # west walls
                 wall_chars = line[0::COL_DIVISOR][:-1]
                 for x, c in enumerate(wall_chars):
                     wall_state = WALL_PRESENT if c == '|' else WALL_ABSENT
-                    self.update_wall(self.cell_id(x, cell_y),
-                                     DIR_WEST, wall_state)
+                    self.update_wall(self.cell_id(x, cell_y), DIR_WEST, wall_state)
                 # special case for the last character
                 wall_state = WALL_PRESENT if line[-1] == '|' else WALL_ABSENT
-                self.update_wall(self.cell_id(
-                    self.size - 1, cell_y), DIR_EAST, wall_state)
+                self.update_wall(self.cell_id(self.size - 1, cell_y), DIR_EAST, wall_state)
             cell_y -= i % ROW_DIVISOR
 
         # special case for the last line
