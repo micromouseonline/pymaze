@@ -94,8 +94,6 @@ class Maze:
         self.set_wall(0, DIR_NORTH, WALL_ABSENT)
 
     def init_walls_from_string(self, lines):
-        # TODO: micropython cannot do this because it can only
-        # do slices with a step of one
         ROW_DIVISOR = 2
         COL_DIVISOR = 4
         self.size = max(len(lines) // ROW_DIVISOR, len(lines[0]) // COL_DIVISOR)
@@ -105,25 +103,35 @@ class Maze:
             if i >= ROW_DIVISOR * self.size:
                 continue
             line = line.rstrip()  # remove \n
+
             if i % ROW_DIVISOR == 0:  # north walls
-                for cell_x, c in enumerate(line[2::COL_DIVISOR]):
+                cell_x = 0
+                for j in range(2, len(line), COL_DIVISOR):
+                    c = line[j]
                     wall_state = WALL_PRESENT if c == '-' else WALL_ABSENT
                     self.update_wall(self.cell_id(cell_x, cell_y), DIR_NORTH, wall_state)
+                    cell_x += 1
+
             else:  # west walls
-                wall_chars = line[0::COL_DIVISOR][:-1]
-                for x, c in enumerate(wall_chars):
+                cell_x = 0
+                for j in range(0, len(line), COL_DIVISOR):
+                    c = line[j]
                     wall_state = WALL_PRESENT if c == '|' else WALL_ABSENT
-                    self.update_wall(self.cell_id(x, cell_y), DIR_WEST, wall_state)
-                # special case for the last character
+                    self.update_wall(self.cell_id(cell_x, cell_y), DIR_WEST, wall_state)
+                    cell_x += 1
                 wall_state = WALL_PRESENT if line[-1] == '|' else WALL_ABSENT
                 self.update_wall(self.cell_id(self.size - 1, cell_y), DIR_EAST, wall_state)
+
             cell_y -= i % ROW_DIVISOR
 
         # special case for the last line
         cell_y = 0
-        for cell_x, c in enumerate(line[2::COL_DIVISOR]):
+        cell_x = 0
+        for j in range(2, len(line), COL_DIVISOR):
+            c = line[j]
             wall_state = WALL_PRESENT if c == '-' else WALL_ABSENT
             self.set_wall(self.cell_id(cell_x, cell_y), DIR_SOUTH, wall_state)
+            cell_x += 1
         return
 
     def set_wall(self, cell, direction, state):
@@ -466,7 +474,7 @@ if __name__ == "__main__":
     print("Flood distance correct: ", maze.cost[0] == 20)
     print(f"{sys.implementation.name} - maze: Execution Time for {iterations()} iterations: {t:} milliseconds")
 
-    # maze.init_walls_from_string(all_japan_2007)
-    # maze.flood(target)
-    # maze_str = maze.get_maze_string(VIEW_COSTS)
-    # print(maze_str)
+    maze.init_walls_from_string(all_japan_2007)
+    maze.flood(target)
+    maze_str = maze.get_maze_string(VIEW_COSTS)
+    print(maze_str)
