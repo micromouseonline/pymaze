@@ -17,7 +17,7 @@ except ImportError:
     micropython = types.SimpleNamespace(native=lambda f: f)
 ################################################################################
 
-from maze_tests import *
+
 
 # Example flood routines and example of use
 
@@ -38,8 +38,8 @@ VISITED = 16   # bit value set when the mouse has entered a cell
 numcells = TABLEWIDTH * (TABLEHEIGHT + 1)
 floodfail = 0  # global flag that is sset if teh flood routine is unable to find a coplete route
 # set up and initialise lists for walls and flood values in maze
-
-walls = [0] * numcells  # list of cell wall items initialised to zero starting at cell 0
+import array
+walls = array.array('B',[0]*numcells) #[0] * numcells  # list of cell wall items initialised to zero starting at cell 0
 # walls[0] = 30   example of setting an indexed value for all walls in cell zero
 # walls[16} = walls[16] | EAST   example of adding an East wall to cell 16
 # To check bits in the walls byte to check if a wall is previously recorded as present
@@ -62,7 +62,7 @@ def floodclear():  # clear the flood table
 # This routine does a Manhatten flood from the start cell to the finish cell
 # On the explore out, flood from MIDDLE To START On the way beck to the start, flood from START to MIDDLE
 
-
+@micropython.native
 def floodmaze(strt, fin):   # flood the maze from the strt cell to the fin cell
     global maze, walls, floodfail, numcells
     floodclear()                    # clear the flood table to all 283
@@ -266,3 +266,40 @@ floodmaze(MIDDLE, START)
 # these two statements will print out the flood table and the walls table
 showflood()
 showwalls()
+
+
+if __name__ == "__main__":
+    """
+    Here is some code that will run the flood multiple times and display
+    the time taken. None of this is needed by the mouse 
+    """
+
+    import time
+    from maze_files import *
+    import os
+    import sys
+
+    def millis():
+        if sys.implementation.name == 'micropython':
+            # MicroPython
+            return time.ticks_ms()
+        else:
+            # Desktop Python
+            return int(round(time.time() * 1000))
+
+    def iterations():
+        if sys.implementation.name == 'micropython':
+            return 1
+        else:
+            return 1000
+        
+    start_time = millis()
+    # target = maze.cell_id(7, 7)
+    for _ in range(iterations()):
+        floodmaze(MIDDLE, START)
+    end_time = millis()
+    t = end_time - start_time
+    # maze_str = maze.get_maze_string(VIEW_COSTS)
+    # print(maze_str)
+    # print("Flood distance correct: ", maze.cost[0] == 20)
+    print(f"{sys.implementation.name} - maze: Execution Time for {iterations()} iterations: {t:} milliseconds")
