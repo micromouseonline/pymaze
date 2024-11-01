@@ -4,6 +4,21 @@
 # Contributions from Peter Harrison and Paul Busby
 # Released under the MIT License (https://opensource.org/licenses/MIT)
 
+
+#################################################################################
+# this bit of stuff lets us use the performance-enhancing features of MicroPython
+# if they are available. With it the flood is twice as fast.
+# It is Python magic and you do not have to understand it to use it
+try:
+    import micropython
+except ImportError:
+    # Define a mock 'micropython' module with a no-op 'native' decorator
+    import types
+    micropython = types.SimpleNamespace(native=lambda f: f)
+################################################################################
+
+from maze_tests import *
+
 # Example flood routines and example of use
 
 # These items in capitals are constants used in the routines.
